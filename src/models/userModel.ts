@@ -11,7 +11,8 @@ interface User {
     phone?: string,
     role: string,
     tokens: string[],
-    generateToken(): string
+    generateToken(): string,
+    comparePassword(password: string): boolean
 }
 
 const userSchema = new mongoose.Schema<User>({
@@ -83,12 +84,16 @@ userSchema.methods.comparePassword = async function (password: string) {
     return await bcrypt.compare(password, this.password);
 }
 
-userSchema.methods.generateToken = function () {
+userSchema.methods.generateToken = async function () {
     if(!process.env.JWT_SECRET) {
         throw new Error("JWT_SECRET is not defined");
     }
 
-    return jwt.sign({ _id: this._id, email: this.email }, process.env.JWT_SECRET);
+    const token =  jwt.sign({ _id: this._id, email: this.email }, process.env.JWT_SECRET);
+    this.tokens = this.tokens.concat({ token });
+    await this.save();
+
+    return token;
 }
 
 const User = mongoose.model<User>("User", userSchema);
