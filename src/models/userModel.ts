@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import {Schema, model} from "mongoose";
 import validator from "validator";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -15,7 +15,7 @@ interface User {
     comparePassword(password: string): boolean
 }
 
-const userSchema = new mongoose.Schema<User>({
+const userSchema = new Schema<User>({
     name: {
         type: String,
         required: true,
@@ -60,7 +60,7 @@ const userSchema = new mongoose.Schema<User>({
     },
     role: {
         type: String,
-        default: "user"
+        default: "customer",
     },
     tokens: [{
         token: {
@@ -96,6 +96,6 @@ userSchema.methods.generateToken = async function () {
     return token;
 }
 
-const User = mongoose.model<User>("User", userSchema);
+const User = model<User>("User", userSchema);
 
 export default User;
