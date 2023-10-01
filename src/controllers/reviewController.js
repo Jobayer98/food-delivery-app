@@ -17,7 +17,7 @@ const updateReview = async(req, res, next) => {
     try {
         const { reviewId } = req.params;
         const updates = Object.keys(req.body);
-        const validKeys = ["rating", "comment"];
+        const validKeys = ["comment"];
         const isValidKey = updates.every((key) => {
             return validKeys.includes(key);
         });
@@ -26,7 +26,8 @@ const updateReview = async(req, res, next) => {
             throw new CustomError("Invalid updates", 400);
         }
 
-        const review = await ReviewModel.findByIdAndUpdate(reviewId, req.body, { customerId: req.user._id}, { new: true, runValidators: true });
+         await ReviewModel.findByIdAndUpdate(reviewId, req.body, { customerId: req.user._id}, { new: true, runValidators: true });
+         const review = await ReviewModel.findById(reviewId);
 
         if (!review){
             throw new CustomError("Review not found", 404);
@@ -44,7 +45,7 @@ const deleteReview = async(req, res, next) => {
     try {
         const { reviewId } = req.params;
 
-        const review = await ReviewModel.findByIdAndUpdate(reviewId, req.body, { customerId: req.user._id}, { new: true, runValidators: true });
+        const review = await ReviewModel.findByIdAndDelete(reviewId);
 
         if (!review){
             throw new CustomError("Review not found", 404);
