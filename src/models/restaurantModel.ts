@@ -33,7 +33,6 @@ const restaurantSchema = new Schema<Restaurant>({
     },
     phone: {
         type: String,
-        required: true,
         trim: true
     },
     ownerId: {

@@ -4,7 +4,6 @@ const orderSchema = new Schema({
     orderStatus: {
         type: String,
         default: "pending",
-        required: true,
         enum: ["pending","confirmed", "delivered", "canceled"],
     },
     totalAmount: {
