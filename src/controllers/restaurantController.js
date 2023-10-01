@@ -2,9 +2,9 @@ const RestaurantModel = require("../models/restaurantModel")
 const CustomError = require("../utility/CustomError")
 
 
-export const showRestaurants = async(req, res, next) => {
+const showRestaurants = async(req, res, next) => {
     try {
-        const restaurants = await RestaurantModel.find({ownerId: req.user._id});
+        const restaurants = await RestaurantModel.find();
 
         if(!restaurants){
             throw new CustomError("Restaurants not found", 404);
@@ -20,10 +20,10 @@ export const showRestaurants = async(req, res, next) => {
     }
 }
 
-export const showSingleRestaurant = async(req, res, next) => {
+const showSingleRestaurant = async(req, res, next) => {
     try {
         const { id } = req.params;
-        const restaurant = await RestaurantModel.findById({_id: id, ownerId: req.user._id});
+        const restaurant = await RestaurantModel.findById(id);
 
         if (!restaurant) {
             throw new CustomError("Restaurant not found", 404);
@@ -39,16 +39,52 @@ export const showSingleRestaurant = async(req, res, next) => {
     }
 }
 
-export const createRestaurant = async(req, res, next) => {
+const ownerShowRestaurants = async(req, res, next) => {
     try {
-        const { name, address, cuisine, hoursOfOperation, phone } = req.body;
+        const restaurants = await RestaurantModel.find({ ownerId: req.user._id });
+
+        if(!restaurants){
+            throw new CustomError("Restaurants not found", 404);
+        }
+
+        res.status(200).json({
+            success: true,
+            data: restaurants,
+        })
+    } catch (error) {
+        next( new CustomError(error, 400) );
+        
+    }
+}
+
+const ownerSingleRestaurant = async(req, res, next) => {
+    try {
+        const { id } = req.params;
+        const restaurant = await RestaurantModel.findById({ id, ownerId: req.user._id });
+
+        if (!restaurant) {
+            throw new CustomError("Restaurant not found", 404);
+        }
+
+        res.status(200).json({
+            success: true,
+            data: restaurant,
+        })
+    } catch (error) {
+        next( new CustomError(error, 400) );
+        
+    }
+}
+const createRestaurant = async(req, res, next) => {    
+    try {
+        const { name } = req.body;
         let restaurant = await RestaurantModel.findOne({ name });
 
         if (restaurant) {
             throw new CustomError("Restaurant already exists", 400);
         }
 
-        restaurant = await RestaurantModel.create({ name, address, cuisine, hoursOfOperation, phone, ownerId: req.user._id });
+        restaurant = await RestaurantModel.create({ ...req.body, ownerId: req.user._id });
 
         res.status(201).json({
             success: true,
@@ -59,7 +95,7 @@ export const createRestaurant = async(req, res, next) => {
     }
 }
 
-export const updateRestaurant = async(req, res, next) => {
+const updateRestaurant = async(req, res, next) => {
     try {
         const { id } = req.params;
         const restaurantKey = Object.keys(req.body);
@@ -72,7 +108,7 @@ export const updateRestaurant = async(req, res, next) => {
             throw new CustomError("Invalid updates", 400);
         }
 
-        const restaurant = await RestaurantModel.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
+        const restaurant = await RestaurantModel.findByIdAndUpdate(id, req.body,{ ownerId: req.user._id}, { new: true, runValidators: true });
         if (!restaurant){
             throw new CustomError("Restaurant not found", 404);
         }
@@ -86,10 +122,10 @@ export const updateRestaurant = async(req, res, next) => {
     }
 }
 
-export const deleteRestaurant = async(req, res, next) => {
+const deleteRestaurant = async(req, res, next) => {
     try {
         const { id } = req.params;
-        const restaurant = await RestaurantModel.findByIdAndDelete(id);
+        const restaurant = await RestaurantModel.findByIdAndDelete(id, { ownerId: req.user._id });
         if (!restaurant){
             throw new CustomError("Restaurant not found", 404);
         }
@@ -102,4 +138,14 @@ export const deleteRestaurant = async(req, res, next) => {
         next( new CustomError(error, 400) );
         
     }
+}
+
+module.exports = {
+    showRestaurants,
+    showSingleRestaurant,
+    createRestaurant,
+    updateRestaurant,
+    deleteRestaurant,
+    ownerShowRestaurants,
+    ownerSingleRestaurant
 }

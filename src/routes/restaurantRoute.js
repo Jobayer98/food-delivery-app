@@ -1,16 +1,20 @@
 const express = require("express")
-const { createRestaurant, deleteRestaurant, showRestaurants, showSingleRestaurant, updateRestaurant } = require("../controllers/restaurantController")
+const { createRestaurant, deleteRestaurant, showRestaurants, showSingleRestaurant, updateRestaurant, ownerShowRestaurants, ownerSingleRestaurant } = require("../controllers/restaurantController")
 const { createMenu, deleteMenuItem, showMenus, updateMenuItem } = require("../controllers/menuController")
 const { createReview, deleteReview, updateReview } = require("../controllers/reviewController")
 
 const router = express.Router();
 
+//owner restaurant route
+router.post("/owner/restaurants", createRestaurant);
+router.get("/owner/restaurants", ownerShowRestaurants);
+router.get("/owner/restaurants/:id", ownerSingleRestaurant);
+router.patch("owner/restaurants/:id", updateRestaurant);
+router.delete("owner/restaurants/:id", deleteRestaurant);
+
 // restaurant routes
-router.post("/restaurants", createRestaurant);
 router.get("/restaurants", showRestaurants);
 router.get("/restaurants/:id", showSingleRestaurant);
-router.patch("/restaurants/:id", updateRestaurant);
-router.delete("/restaurants/:id", deleteRestaurant);
 
 // menu routes
 router.post("/restaurants/:id/menus", createMenu);

@@ -1,7 +1,7 @@
 const  ReviewModel = require("../models/reviewModel")
 const  CustomError = require("../utility/CustomError")
 
-export const createReview = async(req, res, next) => {
+const createReview = async(req, res, next) => {
     try {
         const review = await ReviewModel.create({...req.body, customerId: req.user._id});
         res.status(201).json({
@@ -13,7 +13,7 @@ export const createReview = async(req, res, next) => {
     }
 }
 
-export const updateReview = async(req, res, next) => {
+const updateReview = async(req, res, next) => {
     try {
         const { reviewId } = req.params;
         const updates = Object.keys(req.body);
@@ -26,7 +26,7 @@ export const updateReview = async(req, res, next) => {
             throw new CustomError("Invalid updates", 400);
         }
 
-        const review = await ReviewModel.findByIdAndUpdate(reviewId, req.body, { new: true, runValidators: true });
+        const review = await ReviewModel.findByIdAndUpdate(reviewId, req.body, { customerId: req.user._id}, { new: true, runValidators: true });
 
         if (!review){
             throw new CustomError("Review not found", 404);
@@ -40,11 +40,11 @@ export const updateReview = async(req, res, next) => {
         next( new CustomError(error, 400) );
     }
 }
-export const deleteReview = async(req, res, next) => {
+const deleteReview = async(req, res, next) => {
     try {
         const { reviewId } = req.params;
 
-        const review = await ReviewModel.findByIdAndUpdate(reviewId, req.body, { new: true, runValidators: true });
+        const review = await ReviewModel.findByIdAndUpdate(reviewId, req.body, { customerId: req.user._id}, { new: true, runValidators: true });
 
         if (!review){
             throw new CustomError("Review not found", 404);
@@ -57,4 +57,10 @@ export const deleteReview = async(req, res, next) => {
     }catch (error) {
         next( new CustomError(error, 400) );
     }
+}
+
+module.exports = {
+    createReview,
+    updateReview,
+    deleteReview
 }
