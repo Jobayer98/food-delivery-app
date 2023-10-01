@@ -1,11 +1,5 @@
 import { Schema, model } from "mongoose";
 
-interface Menu {
-    name: string,
-    description?: string
-    price: number
-}
-
 const menuSchema = new Schema({
     name: {
         type: String,
@@ -28,4 +22,6 @@ const menuSchema = new Schema({
     }
 })
 
-const MenuModel = model<Menu>("Menu", menuSchema)
+const MenuModel = model("Menu", menuSchema)
+
+export default MenuModel

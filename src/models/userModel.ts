@@ -61,6 +61,7 @@ const userSchema = new Schema<User>({
     role: {
         type: String,
         default: "customer",
+        enum: ["customer", "admin", "owner", "driver"]
     },
     tokens: [{
         token: {
@@ -69,6 +70,9 @@ const userSchema = new Schema<User>({
         }
     }]
 
+},
+{
+    timestamps: true
 })
 
 userSchema.pre("save", async function (next) {
