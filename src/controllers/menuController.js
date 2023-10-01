@@ -1,7 +1,6 @@
-import { Request, Response, NextFunction } from "express";
-import CustomError from "../utility/CustomError";
-import MenuModel from "../models/menuModel";
-export const showMenus = async(req: Request, res: Response, next: NextFunction) => {
+const CustomError = require("../utility/CustomError");
+const MenuModel = require("../models/menuModel");
+const showMenus = async(req, res, next) => {
     try {
         const menu = await MenuModel.find();
         if (!menu){
@@ -12,13 +11,13 @@ export const showMenus = async(req: Request, res: Response, next: NextFunction) 
             success: true,
             data: menu
         })
-    } catch (error: any) {
+    } catch (error) {
         next( new CustomError(error, 400) );
         
     }
 }
 
-export const showMenuItem = async(req: Request, res: Response, next: NextFunction) => {
+const showMenuItem = async(req, res, next) => {
     try {
         const { menuId } = req.params;
         const item = await MenuModel.findById(menuId);
@@ -31,12 +30,12 @@ export const showMenuItem = async(req: Request, res: Response, next: NextFunctio
             success: true,
             data: item
         })
-    } catch (error: any) {
+    } catch (error) {
         next( new CustomError(error, 400) );
     }
 }
 
-export const createMenu = async(req: Request, res: Response, next: NextFunction) => {
+const createMenu = async(req, res, next) => {
     try {
         const item = await MenuModel.create(req.body);
         
@@ -45,12 +44,12 @@ export const createMenu = async(req: Request, res: Response, next: NextFunction)
             data: item
         })
 
-    } catch (error: any) {
+    } catch (error) {
         next( new CustomError(error, 400) );
     }
 }
 
-export const updateMenuItem = async(req: Request, res: Response, next: NextFunction) => {
+const updateMenuItem = async(req, res, next) => {
     try {
         const { menuId } = req.params;
         const updates = Object.keys(req.body);
@@ -74,12 +73,12 @@ export const updateMenuItem = async(req: Request, res: Response, next: NextFunct
             success: true,
             data: item
         })
-    } catch (error: any) {
+    } catch (error) {
         next( new CustomError(error, 400) );
     }
 }
 
-export const deleteMenuItem = async(req: Request, res: Response, next: NextFunction) => {
+const deleteMenuItem = async(req, res, next) => {
     try {
         const { menuId } = req.params;
         const item = await MenuModel.findByIdAndDelete(menuId);
@@ -92,7 +91,15 @@ export const deleteMenuItem = async(req: Request, res: Response, next: NextFunct
             success: true,
             data: item
         })
-    } catch (error: any) {
+    } catch (error) {
         next( new CustomError(error, 400) );
     }
+}
+
+module.exports = {
+    showMenus,
+    showMenuItem,
+    createMenu,
+    updateMenuItem,
+    deleteMenuItem
 }

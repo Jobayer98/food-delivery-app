@@ -28,4 +28,4 @@ const deliverySchema = new Schema({
 
 const DeliveryModel = model("Delivery", deliverySchema);
 
-export default DeliveryModel;
+module.exports=DeliveryModel;

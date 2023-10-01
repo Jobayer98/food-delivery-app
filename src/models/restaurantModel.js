@@ -35,4 +35,4 @@ const restaurantSchema = new Schema<Restaurant>({
 
 const RestaurantModel = model<Restaurant>("Restaurant", restaurantSchema)
 
-export default RestaurantModel;
+module.exports=RestaurantModel;

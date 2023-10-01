@@ -24,4 +24,4 @@ router.post("/restaurants/:id/menu/:menuId/review", createReview);
 router.patch("/restaurants/:id/menu/:menuId/review/:reviewId", updateReview);
 router.delete("/restaurants/:id/menu/:menuId/review/:reviewId", deleteReview);
 
-export default router
+module.exports=router

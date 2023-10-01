@@ -1,6 +1,7 @@
-import cors from 'cors';
+const express = require("express");
+const cors = require('cors');
 
-import authRouter from "./routes/authRoute"
+const authRouter = require("./routes/authRoute");
 // import CustomError from './utility/CustomError';
 
 const app = express();
@@ -19,4 +20,4 @@ app.use((err, req, res, next)=>{
     })
 })
 
-export default app;
+module.exports = app;

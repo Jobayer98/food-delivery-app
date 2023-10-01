@@ -1,9 +1,8 @@
-import { Request, Response, NextFunction } from "express";
-import User from "../models/userModel";
-import CustomError from "../utility/CustomError";
-import { main } from "../services/resetPassword";
+const User = require("../models/userModel");
+const CustomError = require("../utility/CustomError");
+const { main } = require("../services/resetPassword");
 
-export const signup = async(req: Request, res: Response, next: NextFunction) => {
+const signup = async(req, res, next) => {
     try {
         const {email} = req.body;
         let user = await User.findOne({ email });
@@ -24,12 +23,12 @@ export const signup = async(req: Request, res: Response, next: NextFunction) => 
             data: user,
             
         })
-    } catch (error: any) {
+    } catch (error) {
         next( new CustomError(error, 400) );
     }
 }
 
-export const login = async(req: Request, res: Response, next: NextFunction) => {
+const login = async(req, res, next) => {
     try {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
@@ -54,13 +53,13 @@ export const login = async(req: Request, res: Response, next: NextFunction) => {
             data: user,
             
         })
-    } catch (error: any) {
+    } catch (error) {
         next( new CustomError(error, 400) );
         
     }
 }
 
-export const logout = async(req: Request, res: Response, next: NextFunction) => {
+const logout = async(req, res, next) => {
     try {
         const { email } = req.body;
         const user = await User.findOne({ email });
@@ -74,13 +73,13 @@ export const logout = async(req: Request, res: Response, next: NextFunction) => 
             success: true,
             data: user,
         })
-    } catch (error: any) {
+    } catch (error) {
         next( new CustomError(error, 400) );
         
     }
 }
 
-export const resetPassword = async(req: Request, res: Response, next: NextFunction) => {
+const resetPassword = async(req, res, next) => {
     try {
         const { email } = req.body;
 
@@ -97,8 +96,15 @@ export const resetPassword = async(req: Request, res: Response, next: NextFuncti
        })
 
 
-    } catch (error: any) {
+    } catch (error) {
         next( new CustomError(error, 400) );
         
     }
+}
+
+module.exports = {
+    signup,
+    login,
+    logout,
+    resetPassword
 }

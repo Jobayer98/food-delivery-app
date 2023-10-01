@@ -24,4 +24,4 @@ const menuSchema = new Schema({
 
 const MenuModel = model("Menu", menuSchema)
 
-export default MenuModel
+module.exports=MenuModel

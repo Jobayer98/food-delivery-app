@@ -1,4 +1,4 @@
-import nodemailer from "nodemailer";
+const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
   host: "smtp.ethereal.email",
@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
 });
 
 // async..await is not allowed in global scope, must use a wrapper
-export const main = async(email:string) : Promise<any> => {
+const main = async(email) => {
   // send mail with defined transport object
   const info = await transporter.sendMail({
     from: 'rashedkhanjubayer018@gmail.com', // sender address
@@ -33,3 +33,5 @@ return info;
 }
 
 // main().catch(console.error);
+
+module.exports = main;

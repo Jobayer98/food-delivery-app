@@ -4,7 +4,7 @@ const  bcrypt = require("bcryptjs")
 const  jwt = require("jsonwebtoken")
 
 
-const userSchema = new Schema<User>({
+const userSchema = new Schema({
     name: {
         type: String,
         required: true,
@@ -78,9 +78,6 @@ userSchema.methods.comparePassword = async function (password) {
 }
 
 userSchema.methods.generateToken = async function () {
-    if(!process.env.JWT_SECRET) {
-        throw new Error("JWT_SECRET is not defined");
-    }
 
     const token =  jwt.sign({ _id: this._id, email: this.email }, process.env.JWT_SECRET);
     this.tokens = this.tokens.concat({ token });
@@ -89,6 +86,6 @@ userSchema.methods.generateToken = async function () {
     return token;
 }
 
-const User = model<User>("User", userSchema);
+const User = model("User", userSchema);
 
-export default User;
+module.exports = User;
