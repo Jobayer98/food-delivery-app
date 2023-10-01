@@ -2,25 +2,26 @@ const express = require("express")
 const { createRestaurant, deleteRestaurant, showRestaurants, showSingleRestaurant, updateRestaurant, ownerShowRestaurants, ownerSingleRestaurant } = require("../controllers/restaurantController")
 const { createMenu, deleteMenuItem, showMenus, updateMenuItem } = require("../controllers/menuController")
 const { createReview, deleteReview, updateReview } = require("../controllers/reviewController")
+const isOwner = require("../middlewares/isOwnermiddleware")
+const auth = require("../middlewares/auth.middleware")
 
 const router = express.Router();
 
 //owner restaurant route
-router.post("/owner/restaurants", createRestaurant);
-router.get("/owner/restaurants", ownerShowRestaurants);
-router.get("/owner/restaurants/:id", ownerSingleRestaurant);
-router.patch("owner/restaurants/:id", updateRestaurant);
-router.delete("owner/restaurants/:id", deleteRestaurant);
+router.post("/owner/restaurant", auth, isOwner, createRestaurant);
+router.get("/owner/restaurant", auth, isOwner, ownerShowRestaurants);
+router.patch("/owner/restaurant", auth, isOwner, updateRestaurant);
+router.delete("/owner/restaurant", auth, isOwner, deleteRestaurant);
 
 // restaurant routes
 router.get("/restaurants", showRestaurants);
 router.get("/restaurants/:id", showSingleRestaurant);
 
 // menu routes
-router.post("/restaurants/:id/menus", createMenu);
 router.get("/restaurants/:id/menus", showMenus);
-router.patch("/restaurants/:id/menu/:menuId", updateMenuItem);
-router.delete("/restaurants/:id/menu/:menuId", deleteMenuItem);
+router.post("/restaurants/:id/menus", auth, isOwner, createMenu);
+router.patch("/restaurants/:id/menu/:menuId", auth, isOwner, updateMenuItem);
+router.delete("/restaurants/:id/menu/:menuId", auth, isOwner, deleteMenuItem);
 
 
 // review routes
