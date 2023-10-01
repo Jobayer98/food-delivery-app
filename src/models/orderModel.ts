@@ -4,7 +4,7 @@ const orderSchema = new Schema({
     orderStatus: {
         type: String,
         default: "pending",
-        enum: ["pending","confirmed", "delivered", "canceled"],
+        enum: ["pending","confirmed", "canceled", "delivered"],
     },
     totalAmount: {
         type: Number,
