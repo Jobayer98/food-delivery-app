@@ -1,19 +1,8 @@
-import {Schema, model} from "mongoose";
-import validator from "validator";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+const  { Schema, model } = require("mongoose")
+const  validator = require("validator")
+const  bcrypt = require("bcryptjs")
+const  jwt = require("jsonwebtoken")
 
-interface User {
-    name: string,
-    email: string,
-    password: string,
-    address?: string,
-    phone?: string,
-    role: string,
-    tokens: string[],
-    generateToken(): string,
-    comparePassword(password: string): boolean
-}
 
 const userSchema = new Schema<User>({
     name: {
@@ -27,7 +16,7 @@ const userSchema = new Schema<User>({
         unique: true,
         trim: true,
         lowercase: true,
-        validate(value: string) {
+        validate(value) {
             if (!validator.isEmail(value)) {
                 throw new Error("Email is invalid");
             }
@@ -39,7 +28,7 @@ const userSchema = new Schema<User>({
         required: true,
         minlength: [6, "Password must be at least 6 characters"],
         trim: true,
-        validate(password: string) {
+        validate(password) {
             const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
             if (!passwordRegex.test(password)) {
                 throw new Error("Password must contain at least one upper and lower letter, one number and one special character");
@@ -84,7 +73,7 @@ userSchema.pre("save", async function (next) {
     next();
 })
 
-userSchema.methods.comparePassword = async function (password: string) {
+userSchema.methods.comparePassword = async function (password) {
     return await bcrypt.compare(password, this.password);
 }
 

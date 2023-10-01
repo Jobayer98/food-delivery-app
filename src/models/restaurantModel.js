@@ -1,14 +1,4 @@
-import {Types, Schema, model} from "mongoose";
-
-interface Restaurant {
-    name: string,
-    address: string,
-    cuisine: string,
-    hoursOfOperation: string,
-    phone?: string,
-    ownerId: Types.ObjectId,
-
-}
+const  { Schema, model } = require("mongoose")
 
 const restaurantSchema = new Schema<Restaurant>({
     name: {
@@ -37,10 +27,10 @@ const restaurantSchema = new Schema<Restaurant>({
         trim: true
     },
     ownerId: {
-        type: Types.ObjectId,
+        type: Schema.Types.ObjectId,
         required: true,
         ref: "User"
-    } as unknown as Types.ObjectId,
+    }
 })
 
 const RestaurantModel = model<Restaurant>("Restaurant", restaurantSchema)

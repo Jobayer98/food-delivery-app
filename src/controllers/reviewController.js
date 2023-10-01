@@ -1,25 +1,19 @@
-import { Request, Response, NextFunction } from "express";
-import ReviewModel from "../models/reviewModel";
-import CustomError from "../utility/CustomError";
+const  ReviewModel = require("../models/reviewModel")
+const  CustomError = require("../utility/CustomError")
 
-interface CustomRequest extends Request {
-    user: {
-        _id: string;
-    };
-}
-export const createReview = async(req: CustomRequest, res: Response, next: NextFunction) => {
+export const createReview = async(req, res, next) => {
     try {
         const review = await ReviewModel.create({...req.body, customerId: req.user._id});
         res.status(201).json({
             success: true,
             data: review
         })
-    } catch (error: any) {
+    } catch (error) {
         next( new CustomError(error, 400) );
     }
 }
 
-export const updateReview = async(req: CustomRequest, res: Response, next: NextFunction) => {
+export const updateReview = async(req, res, next) => {
     try {
         const { reviewId } = req.params;
         const updates = Object.keys(req.body);
@@ -42,11 +36,11 @@ export const updateReview = async(req: CustomRequest, res: Response, next: NextF
             success: true,
             data: review
         })
-    }catch (error: any) {
+    }catch (error) {
         next( new CustomError(error, 400) );
     }
 }
-export const deleteReview = async(req: CustomRequest, res: Response, next: NextFunction) => {
+export const deleteReview = async(req, res, next) => {
     try {
         const { reviewId } = req.params;
 
@@ -60,7 +54,7 @@ export const deleteReview = async(req: CustomRequest, res: Response, next: NextF
             success: true,
             data: review
         })
-    }catch (error: any) {
+    }catch (error) {
         next( new CustomError(error, 400) );
     }
 }

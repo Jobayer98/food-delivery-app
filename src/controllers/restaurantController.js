@@ -1,10 +1,10 @@
-import { Request, Response, NextFunction } from "express";
-import RestaurantModel from "../models/restaurantModel";
-import CustomError from "../utility/CustomError";
+const RestaurantModel = require("../models/restaurantModel")
+const CustomError = require("../utility/CustomError")
 
-export const showRestaurants = async(req: Request, res: Response, next: NextFunction) => {
+
+export const showRestaurants = async(req, res, next) => {
     try {
-        const restaurants = await RestaurantModel.find();
+        const restaurants = await RestaurantModel.find({ownerId: req.user._id});
 
         if(!restaurants){
             throw new CustomError("Restaurants not found", 404);
@@ -14,16 +14,16 @@ export const showRestaurants = async(req: Request, res: Response, next: NextFunc
             success: true,
             data: restaurants,
         })
-    } catch (error: any) {
+    } catch (error) {
         next( new CustomError(error, 400) );
         
     }
 }
 
-export const showSingleRestaurant = async(req: Request, res: Response, next: NextFunction) => {
+export const showSingleRestaurant = async(req, res, next) => {
     try {
         const { id } = req.params;
-        const restaurant = await RestaurantModel.findById(id);
+        const restaurant = await RestaurantModel.findById({_id: id, ownerId: req.user._id});
 
         if (!restaurant) {
             throw new CustomError("Restaurant not found", 404);
@@ -33,33 +33,33 @@ export const showSingleRestaurant = async(req: Request, res: Response, next: Nex
             success: true,
             data: restaurant,
         })
-    } catch (error: any) {
+    } catch (error) {
         next( new CustomError(error, 400) );
         
     }
 }
 
-export const createRestaurant = async(req: Request, res: Response, next: NextFunction) => {
+export const createRestaurant = async(req, res, next) => {
     try {
-        const { name, address, cuisine, hoursOfOperation, phone, ownerId } = req.body;
+        const { name, address, cuisine, hoursOfOperation, phone } = req.body;
         let restaurant = await RestaurantModel.findOne({ name });
 
         if (restaurant) {
             throw new CustomError("Restaurant already exists", 400);
         }
 
-        restaurant = await RestaurantModel.create({ name, address, cuisine, hoursOfOperation, phone, ownerId });
+        restaurant = await RestaurantModel.create({ name, address, cuisine, hoursOfOperation, phone, ownerId: req.user._id });
 
         res.status(201).json({
             success: true,
             data: restaurant,
         })
-    }catch (error: any) {
+    }catch (error) {
         next( new CustomError(error, 400) );
     }
 }
 
-export const updateRestaurant = async(req: Request, res: Response, next: NextFunction) => {
+export const updateRestaurant = async(req, res, next) => {
     try {
         const { id } = req.params;
         const restaurantKey = Object.keys(req.body);
@@ -81,12 +81,12 @@ export const updateRestaurant = async(req: Request, res: Response, next: NextFun
             success: true,
             data: restaurant,
         })
-    }catch (error: any) {
+    }catch (error) {
         next( new CustomError(error, 400) );
     }
 }
 
-export const deleteRestaurant = async(req: Request, res: Response, next: NextFunction) => {
+export const deleteRestaurant = async(req, res, next) => {
     try {
         const { id } = req.params;
         const restaurant = await RestaurantModel.findByIdAndDelete(id);
@@ -98,7 +98,7 @@ export const deleteRestaurant = async(req: Request, res: Response, next: NextFun
             success: true,
             data: restaurant,
         })
-    } catch (error: any) {
+    } catch (error) {
         next( new CustomError(error, 400) );
         
     }

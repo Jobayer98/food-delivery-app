@@ -1,6 +1,6 @@
-import express from "express";
+const express = require( "express")
 
-import {signup, login, resetPassword, logout} from "../controllers/authController";
+const {signup, login, resetPassword, logout} = require ("../controllers/authController")
 
 const router = express.Router();
 

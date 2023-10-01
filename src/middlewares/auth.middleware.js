@@ -1,17 +1,13 @@
-import {Request, Response, NextFunction} from "express";
+
 import jwt from "jsonwebtoken";
 import User from "../models/userModel";
 import CustomError from "../utility/CustomError";
 
-interface AuthRequest extends Request {
-  token: string;
-  user?: any;
-}
 
-const auth = async (req: AuthRequest, res: Response, next: NextFunction) => {
+const auth = async (req, res, next) => {
   try {
-    const token = req.header("Authorization")?.replace("Bearer ", "") || '';
-    const decoded: any = jwt.verify(token, process.env.JWT_SECRET || '');
+    const token = req.header("Authorization")?.replace("Bearer ", "") ;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     const user = await User.findOne({
       _id: decoded._id,
