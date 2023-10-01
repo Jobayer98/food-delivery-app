@@ -1,7 +1,7 @@
 
-import jwt from "jsonwebtoken";
-import User from "../models/userModel";
-import CustomError from "../utility/CustomError";
+const jwt = require("jsonwebtoken");
+const User = require("../models/userModel");
+const CustomError = require("../utility/CustomError");
 
 
 const auth = async (req, res, next) => {
