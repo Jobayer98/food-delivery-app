@@ -28,19 +28,26 @@ const userSchema = new Schema({
         required: true,
         minlength: [6, "Password must be at least 6 characters"],
         trim: true,
-        validate(password) {
-            const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
-            if (!passwordRegex.test(password)) {
-                throw new Error("Password must contain at least one upper and lower letter, one number and one special character");
-            }
-
-            return passwordRegex.test(password);
-        }
+        validate: {
+            validator: function (password) {
+              const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/;
+              
+              return passwordRegex.test(password);
+            },
+            message: "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character",
+          }
     },
     address: {
-        type: String,
-        trim: true,
-        default: null
+        city: {
+            type: String,
+            trim: true,
+            default: null
+        },
+        area : {
+            type: String,
+            trim: true,
+            default: null
+        }
     },
     phone: {
         type: String,
