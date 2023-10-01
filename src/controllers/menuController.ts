@@ -20,8 +20,8 @@ export const showMenus = async(req: Request, res: Response, next: NextFunction) 
 
 export const showMenuItem = async(req: Request, res: Response, next: NextFunction) => {
     try {
-        const { id } = req.params;
-        const item = await MenuModel.findById(id);
+        const { menuId } = req.params;
+        const item = await MenuModel.findById(menuId);
         
         if (!item){
             throw new CustomError("Item not found", 404);
@@ -52,7 +52,7 @@ export const createMenu = async(req: Request, res: Response, next: NextFunction)
 
 export const updateMenuItem = async(req: Request, res: Response, next: NextFunction) => {
     try {
-        const { id } = req.params;
+        const { menuId } = req.params;
         const updates = Object.keys(req.body);
         const validKeys = ["name", "description", "price"];
 
@@ -64,7 +64,7 @@ export const updateMenuItem = async(req: Request, res: Response, next: NextFunct
             throw new CustomError("Invalid updates", 400);
         }
 
-        const item = await MenuModel.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
+        const item = await MenuModel.findByIdAndUpdate(menuId, req.body, { new: true, runValidators: true });
         
         if (!item){
             throw new CustomError("Item not found", 404);
@@ -81,8 +81,8 @@ export const updateMenuItem = async(req: Request, res: Response, next: NextFunct
 
 export const deleteMenuItem = async(req: Request, res: Response, next: NextFunction) => {
     try {
-        const { id } = req.params;
-        const item = await MenuModel.findByIdAndDelete(id);
+        const { menuId } = req.params;
+        const item = await MenuModel.findByIdAndDelete(menuId);
         
         if (!item){
             throw new CustomError("Item not found", 404);

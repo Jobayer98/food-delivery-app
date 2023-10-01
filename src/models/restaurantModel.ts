@@ -5,7 +5,7 @@ interface Restaurant {
     address: string,
     cuisine: string,
     hoursOfOperation: string,
-    phone: string,
+    phone?: string,
     ownerId: Types.ObjectId,
 
 }
@@ -14,6 +14,7 @@ const restaurantSchema = new Schema<Restaurant>({
     name: {
         type: String,
         required: true,
+        unique: true,
         trim: true
     },
     address: {
