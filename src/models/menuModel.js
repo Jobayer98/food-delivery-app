@@ -15,6 +15,16 @@ const menuSchema = new Schema({
         required: true,
         trim: true
     },
+    category:{
+        type: String,
+        required: true,
+        trim: true
+    },
+    review:{
+        type: String,
+        trim: true,
+        default: null
+    },
     restaurantId: {
         type: Schema.Types.ObjectId,
         required: true,
