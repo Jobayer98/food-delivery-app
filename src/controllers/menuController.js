@@ -1,5 +1,6 @@
 const CustomError = require("../utility/CustomError");
 const MenuModel = require("../models/menuModel");
+const RestaurantModel = require("../models/restaurantModel");
 const showMenus = async(req, res, next) => {
     try {
         const menu = await MenuModel.find();
@@ -37,7 +38,7 @@ const showMenuItem = async(req, res, next) => {
 
 const createMenu = async(req, res, next) => {
     try {
-        const item = await MenuModel.create({...req.body, ownerId: req.user._id});
+        const item = await MenuModel.create({...req.body, restaurantId: req.params.id});
         
         res.status(201).json({
             success: true,
@@ -53,7 +54,7 @@ const updateMenuItem = async(req, res, next) => {
     try {
         const { menuId } = req.params;
         const updates = Object.keys(req.body);
-        const validKeys = ["name", "description", "price"];
+        const validKeys = ["name", "description", "price", "category"];
 
         const isValidKey = updates.every((key) => {
             return validKeys.includes(key);
@@ -63,7 +64,7 @@ const updateMenuItem = async(req, res, next) => {
             throw new CustomError("Invalid updates", 400);
         }
 
-        const item = await MenuModel.findByIdAndUpdate(menuId, req.body, { ownerId: req.user._id}, { new: true, runValidators: true });
+        const item = await MenuModel.findByIdAndUpdate(menuId, req.body, {new: true, runValidators: true});
         
         if (!item){
             throw new CustomError("Item not found", 404);
@@ -81,7 +82,7 @@ const updateMenuItem = async(req, res, next) => {
 const deleteMenuItem = async(req, res, next) => {
     try {
         const { menuId } = req.params;
-        const item = await MenuModel.findByIdAndDelete({menuId, ownerId: req.user._id});
+        const item = await MenuModel.findByIdAndDelete(menuId);
         
         if (!item){
             throw new CustomError("Item not found", 404);
