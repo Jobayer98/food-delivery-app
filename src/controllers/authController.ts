@@ -61,7 +61,23 @@ export const login = async(req: Request, res: Response, next: NextFunction) => {
 }
 
 export const logout = async(req: Request, res: Response, next: NextFunction) => {
-    
+    try {
+        const { email } = req.body;
+        const user = await User.findOne({ email });
+        if (!user) {
+            throw new CustomError("Account doesn't exist", 400);
+        }
+        user.tokens = [];
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            data: user,
+        })
+    } catch (error: any) {
+        next( new CustomError(error, 400) );
+        
+    }
 }
 
 export const resetPassword = async(req: Request, res: Response, next: NextFunction) => {
