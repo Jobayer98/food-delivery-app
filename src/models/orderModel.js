@@ -25,17 +25,18 @@ const orderSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "User",
         required: true,
-    },
-    restaurantId: {
-        type: Schema.Types.ObjectId,
-        ref: "Restaurant",
-        required: true,
-    },
-    driverId: {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-        required: false,
     }
+    
+    // restaurantId: {
+    //     type: Schema.Types.ObjectId,
+    //     ref: "Restaurant",
+    //     required: true,
+    // },
+    // driverId: {
+    //     type: Schema.Types.ObjectId,
+    //     ref: "User",
+    //     required: false,
+    // }
 })
 
 const OrderModel = model("Order", orderSchema);
