@@ -11,17 +11,17 @@ const signup = async(req, res, next) => {
         }
 
         user = await User.create(req.body);
-        // const token =  user.generateToken();
+        const token = await user.generateToken();
+        
+        res.cookie("access_token", 'Bearer ' + token, {
+            httpOnly: true,
+            maxAge: 30000, // 30 seconds
 
-        // res.cookie("access_token", 'Bearer ' + token, {
-        //     httpOnly: true,
-        //     maxAge: 30000, // 30 seconds
-
-        // })
+        })
         res.status(201).json({
             success: true,
             data: user,
-            
+            token
         })
     } catch (error) {
         next( new CustomError(error, 400) );
@@ -42,16 +42,16 @@ const login = async(req, res, next) => {
             throw new CustomError("invalid credentials", 401);
         }
 
-        // const token = user.generateToken();
+        const token = await user.generateToken();
 
-        // res.cookie("access_token", 'Bearer ' + token, {
-        //     httpOnly: true,
-        //     maxAge: 30000, // 30 seconds
-        // })
+        res.cookie("access_token", 'Bearer ' + token, {
+            httpOnly: true,
+            maxAge: 30000, // 30 seconds
+        })
         res.status(200).json({
             success: true,
             data: user,
-            
+            token
         })
     } catch (error) {
         next( new CustomError(error, 400) );
