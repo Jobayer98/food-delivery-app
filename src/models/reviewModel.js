@@ -1,12 +1,14 @@
 const  { Schema, model } = require("mongoose")
 
 const reviewSchema = new Schema({
-    rating: {
-        type: Number,
-    },
     comment: {
         type: String,
         trim: true
+    },
+    customerId: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
     }
 }, {
     timestamps: true
