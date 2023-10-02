@@ -3,7 +3,7 @@ const  CustomError = require("../utility/CustomError")
 
 const createReview = async(req, res, next) => {
     try {
-        const review = await ReviewModel.create({...req.body, customerId: req.user._id});
+        const review = await ReviewModel.create({...req.body, menuId: req.params.menuId, customerId: req.user._id});
         res.status(201).json({
             success: true,
             data: review
