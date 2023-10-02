@@ -20,16 +20,17 @@ const menuSchema = new Schema({
         required: true,
         trim: true
     },
-    review:{
-        type: String,
-        trim: true,
-        default: null
-    },
     restaurantId: {
         type: Schema.Types.ObjectId,
         required: true,
         ref: "Restaurant",
     }
+})
+
+menuSchema.virtual("reviews", {
+    ref: "Review",
+    localField: "_id",
+    foreignField: "menuId",
 })
 
 const MenuModel = model("Menu", menuSchema)

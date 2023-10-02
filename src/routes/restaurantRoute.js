@@ -1,6 +1,6 @@
 const express = require("express")
 const { createRestaurant, deleteRestaurant, showRestaurants, showSingleRestaurant, updateRestaurant, ownerShowRestaurants } = require("../controllers/restaurantController")
-const { createMenu, deleteMenuItem, showMenus, updateMenuItem, showMenuItem } = require("../controllers/menuController")
+const { createMenu, deleteMenuItem, showMenus, updateMenuItem, showMenuItem, showOwnerMenus } = require("../controllers/menuController")
 const { createReview, deleteReview, updateReview } = require("../controllers/reviewController")
 const isOwner = require("../middlewares/isOwnermiddleware")
 const auth = require("../middlewares/auth.middleware")
@@ -18,7 +18,8 @@ router.get("/restaurants", showRestaurants);
 router.get("/restaurants/:id", showSingleRestaurant);
 
 // menu routes
-router.get("/restaurants/:id/menus", showMenus);
+router.get("/rest/menus", showMenus);
+router.get("/restaurants/:id/menus", auth, isOwner, showOwnerMenus);
 router.post("/restaurants/:id/menus", auth, isOwner, createMenu);
 router.get("/restaurants/:id/menus/:menuId", showMenuItem);
 router.patch("/restaurants/:id/menus/:menuId", auth, isOwner, updateMenuItem);

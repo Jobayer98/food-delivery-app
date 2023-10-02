@@ -1,11 +1,17 @@
 
 const CustomError = require("../utility/CustomError");
 const OrderModel = require("../models/orderModel");
+const MenuModel = require("../models/menuModel");
+const { default: mongoose } = require("mongoose");
 
   
 const createOrder = async(req, res, next) => {
     try {
-        const order = await OrderModel.create({...req.body, customerId: req.user._id});
+        const restIds = await Promise.all(req.body.orderItems.map(async (mid) => {
+            const menuId = await MenuModel.findById(new mongoose.Types.ObjectId(mid));
+            return menuId.restaurantId.toString()
+        }));
+        const order = await OrderModel.create({...req.body, customerId: req.user._id, restaurantId: [...restIds]});
         res.status(201).json({
             success: true,
             data: order

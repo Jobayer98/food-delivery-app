@@ -9,11 +9,10 @@ const reviewSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "User",
         required: true,
-    },
+    }, 
     menuId: {
         type: Schema.Types.ObjectId,
         ref: "Menu",
-        required: true,
     }
 }, {
     timestamps: true

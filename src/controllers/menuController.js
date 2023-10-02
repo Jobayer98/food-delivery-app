@@ -1,6 +1,5 @@
 const CustomError = require("../utility/CustomError");
 const MenuModel = require("../models/menuModel");
-const RestaurantModel = require("../models/restaurantModel");
 const showMenus = async(req, res, next) => {
     try {
         const menu = await MenuModel.find();
@@ -26,7 +25,7 @@ const showMenuItem = async(req, res, next) => {
         if (!item){
             throw new CustomError("Item not found", 404);
         }
-
+        
         res.status(200).json({
             success: true,
             data: item
@@ -47,6 +46,23 @@ const createMenu = async(req, res, next) => {
 
     } catch (error) {
         next( new CustomError(error, 400) );
+    }
+}
+
+const showOwnerMenus = async(req, res, next) => {
+    try {
+        const menu = await MenuModel.find({restaurantId: req.params.id})
+        if (!menu){
+            throw new CustomError("Menus not found", 404);
+        }
+
+        res.status(200).json({
+            success: true,
+            data: menu
+        })
+    } catch (error) {
+        next( new CustomError(error, 400) );
+        
     }
 }
 
@@ -102,5 +118,6 @@ module.exports = {
     showMenuItem,
     createMenu,
     updateMenuItem,
-    deleteMenuItem
+    deleteMenuItem,
+    showOwnerMenus
 }
