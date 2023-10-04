@@ -13,11 +13,6 @@ const signup = async(req, res, next) => {
         user = await User.create(req.body);
         const token = await user.generateToken();
         
-        res.cookie("access_token", 'Bearer ' + token, {
-            httpOnly: true,
-            maxAge: 30000, // 30 seconds
-
-        })
         res.status(201).json({
             success: true,
             data: user,
@@ -44,10 +39,6 @@ const login = async(req, res, next) => {
 
         const token = await user.generateToken();
 
-        res.cookie("access_token", 'Bearer ' + token, {
-            httpOnly: true,
-            maxAge: 30000, // 30 seconds
-        })
         res.status(200).json({
             success: true,
             data: user,
@@ -61,8 +52,7 @@ const login = async(req, res, next) => {
 
 const logout = async(req, res, next) => {
     try {
-        const { email } = req.body;
-        const user = await User.findOne({ email });
+        const user = await User.findById(req.user._id);
         if (!user) {
             throw new CustomError("Account doesn't exist", 400);
         }
@@ -71,7 +61,7 @@ const logout = async(req, res, next) => {
 
         res.status(200).json({
             success: true,
-            data: user,
+           msg: "Logged out successfully",
         })
     } catch (error) {
         next( new CustomError(error, 400) );

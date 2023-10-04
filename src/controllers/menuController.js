@@ -52,7 +52,8 @@ const createMenu = async(req, res, next) => {
 const showOwnerMenus = async(req, res, next) => {
     try {
         const menu = await MenuModel.find({restaurantId: req.params.id})
-        if (!menu){
+        console.log(menu)
+        if (!menu || menu.length === 0){
             throw new CustomError("Menus not found", 404);
         }
 
