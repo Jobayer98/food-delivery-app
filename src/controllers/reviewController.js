@@ -1,12 +1,26 @@
-const  ReviewModel = require("../models/reviewModel")
 const  CustomError = require("../utility/CustomError")
+const User = require("../models/userModel")
+const MenuModel = require("../models/menuModel")
 
 const createReview = async(req, res, next) => {
     try {
-        const review = await ReviewModel.create({...req.body, menuId: req.params.menuId, customerId: req.user._id});
+        const isExistItem = await MenuModel.findById(req.params.menuId);
+        
+        if (!isExistItem){
+            throw new CustomError("Item not found", 404);
+        }
+
+        const review = {
+            user: req.user._id,
+            review: req.body.review
+        }
+        
+        isExistItem.reviews.push(review);
+        await isExistItem.save();
+
         res.status(201).json({
             success: true,
-            data: review
+            data: {review: req.body.review}
         })
     } catch (error) {
         next( new CustomError(error, 400) );

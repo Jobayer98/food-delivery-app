@@ -31,7 +31,7 @@ router.delete("/restaurant/dashboard/menus/:menuId", auth, isOwner, deleteMenuIt
 
 
 // review routes
-router.post("/menu/review", auth, createReview);
+router.post("/menu/:menuId/review", auth, createReview);
 router.patch("/menu/review/:reviewId", auth, updateReview);
 router.delete("/menu/review/:reviewId", auth, deleteReview);
 
