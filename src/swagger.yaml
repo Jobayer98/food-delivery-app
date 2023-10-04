@@ -261,7 +261,7 @@ paths:
                           example: Central
         500:
           description: Internal server error
-  /menu:
+  /menus:
     get:
       summary: Get all menus
       tags:
@@ -379,9 +379,9 @@ paths:
           description: Bad request
         500:
           description: Internal server error
-  restaurant/dashboard/{restaurantName}:
+  /restaurant/dashboard:
     get:
-      summary: Get restaurant by name
+      summary: Get restaurant info
       tags:
         - Restaurant owner
       responses:
@@ -432,7 +432,7 @@ paths:
                 $ref: '#/components/schemas/Restaurant'
         500:
           description: Internal server error
-  restaurant/dashboard/menu:
+  /restaurant/dashboard/menu:
     post:
       security:
         - bearerAuth: []
@@ -457,6 +457,7 @@ paths:
           description: Bad request
         500:
           description: Internal server error
+  /restaurant/dashboard/menus:
     get:
       security:
         - bearerAuth: []
@@ -474,7 +475,7 @@ paths:
                   $ref: '#/components/schemas/Menu'
         500:
           description: Internal server error
-  restaurant/dashboard/menu/{menuId}:
+  /restaurant/dashboard/menus/{menuId}:
     patch:
       security: 
         - bearerAuth: []
@@ -548,14 +549,8 @@ components:
               type: string
               example: Central
         hoursOfOperation:
-          type: object
-          properties:
-            open:
-              type: string
-              example: 10:00
-            close:
-              type: string
-              example: 22:00
+          type: string
+          example: 9:00 - 22:00
         phone:
           type: string
           example: 123456789   

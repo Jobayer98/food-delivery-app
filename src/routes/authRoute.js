@@ -5,7 +5,7 @@ const auth = require("../middlewares/auth.middleware")
 const router = express.Router();
 
 router.post("/signup", signup)
-router.post("/login", login)
+router.post("/signin", login)
 router.post("/logout", auth, logout)
 router.post("/reset", resetPassword)
 

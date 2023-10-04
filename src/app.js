@@ -26,7 +26,7 @@ app.use("/api/v1", orderRouter);
 app.use((err, req, res, next)=>{
     res.status(err.statusCode || 500).json({
         success: false,
-        error: err.message
+        msg: err.message
     })
 })
 

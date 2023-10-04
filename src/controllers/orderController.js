@@ -14,7 +14,7 @@ const createOrder = async(req, res, next) => {
         const order = await OrderModel.create({...req.body, customerId: req.user._id, restaurantId: [...restIds]});
         res.status(201).json({
             success: true,
-            data: order
+            msg: "Order placed successfully",
         })
     } catch (error) {
         next( new CustomError(error, 400) );
@@ -23,7 +23,7 @@ const createOrder = async(req, res, next) => {
 
 const showOrders = async(req, res, next) => {
     try {
-        const orders = await OrderModel.find({customerId: req.user._id});
+        const orders = await OrderModel.find({customerId: req.user._id}).select("-_id orderStatus totalAmount orderItems");
         if (!orders){
             throw new CustomError("Orders not found", 404);
         }

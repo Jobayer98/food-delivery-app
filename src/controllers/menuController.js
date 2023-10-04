@@ -1,9 +1,10 @@
 const CustomError = require("../utility/CustomError");
 const MenuModel = require("../models/menuModel");
+const RestaurantModel = require("../models/restaurantModel");
 const showMenus = async(req, res, next) => {
     try {
         const menu = await MenuModel.find();
-        if (!menu){
+        if (!menu || menu.length === 0){
             throw new CustomError("Menus not found", 404);
         }
 
@@ -37,7 +38,8 @@ const showMenuItem = async(req, res, next) => {
 
 const createMenu = async(req, res, next) => {
     try {
-        const item = await MenuModel.create({...req.body, restaurantId: req.params.id});
+        const [id] = await RestaurantModel.where({ ownerId: req.user._id }).select("_id");
+        const item = await MenuModel.create({...req.body, restaurantId: id._id});
         
         res.status(201).json({
             success: true,
@@ -51,8 +53,8 @@ const createMenu = async(req, res, next) => {
 
 const showOwnerMenus = async(req, res, next) => {
     try {
-        const menu = await MenuModel.find({restaurantId: req.params.id})
-        console.log(menu)
+        const [id] = await RestaurantModel.where({ ownerId: req.user._id }).select("_id");
+        const menu = await MenuModel.find({ restaurantId: id._id });
         if (!menu || menu.length === 0){
             throw new CustomError("Menus not found", 404);
         }

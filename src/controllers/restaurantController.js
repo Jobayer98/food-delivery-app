@@ -1,12 +1,13 @@
-const RestaurantModel = require("../models/restaurantModel")
+const RestaurantModel = require("../models/restaurantModel");
+const User = require("../models/userModel");
 const CustomError = require("../utility/CustomError")
 
 
 const showRestaurants = async(req, res, next) => {
     try {
-        const restaurants = await RestaurantModel.find();
+        const restaurants = await RestaurantModel.find().select("name address hoursOfOperation phone");
 
-        if(!restaurants){
+        if(!restaurants || restaurants.length === 0){
             throw new CustomError("Restaurants not found", 404);
         }
 
@@ -42,7 +43,7 @@ const showSingleRestaurant = async(req, res, next) => {
 const ownerShowRestaurants = async(req, res, next) => {
     try {
         const restaurants = await RestaurantModel.find({ ownerId: req.user._id });
-
+        
         if(!restaurants){
             throw new CustomError("Restaurants not found", 404);
         }
@@ -98,7 +99,7 @@ const createRestaurant = async(req, res, next) => {
 const updateRestaurant = async(req, res, next) => {
     try {
         const restaurantKey = Object.keys(req.body);
-        const validKey = ["name", "address", "cuisine", "hoursOfOperation", "phone"];
+        const validKey = ["name", "address", "hoursOfOperation", "phone"];
         const isValidKey = restaurantKey.every((key) => {
             return validKey.includes(key);
         })
@@ -106,7 +107,6 @@ const updateRestaurant = async(req, res, next) => {
         if (!isValidKey) {
             throw new CustomError("Invalid updates", 400);
         }
-
         await RestaurantModel.findOneAndUpdate({ ownerId: req.user._id }, {...req.body});
         const restaurant = await RestaurantModel.findOne({ ownerId: req.user._id });
         if (!restaurant){

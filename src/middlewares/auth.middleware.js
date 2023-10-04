@@ -23,7 +23,7 @@ const auth = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
-    next(error);
+    next(new CustomError(error, 403));
   }
 };
 
