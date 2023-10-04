@@ -239,6 +239,10 @@ paths:
       summary: Get Restaurant by id
       tags:
         - User
+      parameters:
+        - in: path
+          name: restaurantId
+          required: true
       responses:
         200:
           description: successful operation
@@ -282,6 +286,10 @@ paths:
       summary: Get menu by id
       tags:
         - User
+      parameters:
+        - in: path
+          name: menuId
+          required: true
       responses:
         200:
           description: successful operation
@@ -315,20 +323,27 @@ paths:
         400:
           description: Bad request
         500:
-  /menu/review/{reviewId}:
+  /menu/{menuId}/review/{reviewId}:
     patch:
       security: 
         - bearerAuth: []
       summary: Update review
       tags:
         - User
+      parameters:
+        - in: path
+          name: menuId
+          required: true
+        - in: path
+          name: reviewId
+          required: true
       requestBody:
         required: true
         description: Update a review
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Review'
+              type: string
       responses:
         200:
           description: successful operation
@@ -344,6 +359,20 @@ paths:
       summary: Delete review
       tags:
         - User
+      parameters:
+        - in: path
+          name: menuId
+          required: true
+        - in: path
+          name: reviewId
+          required: true
+      requestBody:
+        required: true
+        description: Delete a review
+        content:
+          application/json:
+            schema:
+              type: string
       responses:
         200:
           description: successful operation
@@ -482,6 +511,10 @@ paths:
       summary: Update menu
       tags:
         - Restaurant owner
+      parameters:
+        - in: path
+          name: menuId
+          required: true
       requestBody:
         required: true
         description: Update a menu
@@ -506,6 +539,10 @@ paths:
       summary: Delete menu
       tags:
         - Restaurant owner
+      parameters:
+        - in: path
+          name: menuId
+          required: true
       responses:
         200:
           description: successful operation
