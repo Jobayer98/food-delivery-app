@@ -32,7 +32,7 @@ router.delete("/restaurant/dashboard/menus/:menuId", auth, isOwner, deleteMenuIt
 
 // review routes
 router.post("/menu/:menuId/review", auth, createReview);
-router.patch("/menu/review/:reviewId", auth, updateReview);
-router.delete("/menu/review/:reviewId", auth, deleteReview);
+router.patch("/menu/:menuId/review/:reviewId", auth, updateReview);
+router.delete("/menu/:menuId/review/:reviewId", auth, deleteReview);
 
 module.exports=router

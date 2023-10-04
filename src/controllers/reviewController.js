@@ -1,5 +1,4 @@
 const  CustomError = require("../utility/CustomError")
-const User = require("../models/userModel")
 const MenuModel = require("../models/menuModel")
 
 const createReview = async(req, res, next) => {
@@ -14,7 +13,7 @@ const createReview = async(req, res, next) => {
             user: req.user._id,
             review: req.body.review
         }
-        
+
         isExistItem.reviews.push(review);
         await isExistItem.save();
 
@@ -31,7 +30,7 @@ const updateReview = async(req, res, next) => {
     try {
         const { reviewId } = req.params;
         const updates = Object.keys(req.body);
-        const validKeys = ["comment"];
+        const validKeys = ["review"];
         const isValidKey = updates.every((key) => {
             return validKeys.includes(key);
         });
@@ -40,16 +39,27 @@ const updateReview = async(req, res, next) => {
             throw new CustomError("Invalid updates", 400);
         }
 
-         await ReviewModel.findByIdAndUpdate(reviewId, req.body, { customerId: req.user._id}, { new: true, runValidators: true });
-         const review = await ReviewModel.findById(reviewId);
+        const item = await MenuModel.findById(req.params.menuId);
 
-        if (!review){
+        if (!item){
+            throw new CustomError("Item not found", 404);
+        }
+
+        const reviewIndex = item.reviews.findIndex((review) => review._id.toString() === reviewId);
+
+        if(reviewIndex === -1){
             throw new CustomError("Review not found", 404);
         }
 
+        item.reviews[reviewIndex] = {
+            ...req.body
+        }
+
+        await item.save();
+
         res.status(200).json({
             success: true,
-            data: review
+            data: {review: item.reviews[reviewIndex]}
         })
     }catch (error) {
         next( new CustomError(error, 400) );
@@ -59,15 +69,24 @@ const deleteReview = async(req, res, next) => {
     try {
         const { reviewId } = req.params;
 
-        const review = await ReviewModel.findByIdAndDelete(reviewId);
+        const item = await MenuModel.findById(req.params.menuId);
 
-        if (!review){
+        if (!item){
+            throw new CustomError("Item not found", 404);
+        }
+
+        const reviewIndex = item.reviews.findIndex((review) => review._id.toString() === reviewId);
+
+        if(reviewIndex === -1){
             throw new CustomError("Review not found", 404);
         }
 
+        item.reviews.splice(reviewIndex, 1);
+        await item.save();
+
         res.status(200).json({
             success: true,
-            data: review
+            msg: "Review deleted successfully"
         })
     }catch (error) {
         next( new CustomError(error, 400) );
