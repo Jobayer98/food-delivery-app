@@ -4,9 +4,9 @@ const auth = require("../middlewares/auth.middleware")
 
 const router = express.Router();
 
-router.post("/signup", signup)
-router.post("/signin", login)
-router.post("/logout", auth, logout)
-router.post("/reset", resetPassword)
+router.post("/auth/signup", signup)
+router.post("/auth/signin", login)
+router.post("/auth/logout", auth, logout)
+router.post("/auth/reset", resetPassword)
 
 module.exports=router;
