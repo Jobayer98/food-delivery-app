@@ -18,13 +18,15 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(cors())
 app.use(express.json());
 
-app.use("/", (req, res)=>{
-    res.send("Welcome to Food Delivery System")
 
-})
 app.use("/api/v1", authRouter);
 app.use("/api/v1", restaurantRouter);
 app.use("/api/v1", orderRouter);
+
+app.get("/", (req, res)=>{
+    res.send("Welcome to Food Delivery System")
+
+})
 
 // error handler
 app.use((err, req, res, next)=>{
