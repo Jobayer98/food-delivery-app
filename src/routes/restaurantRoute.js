@@ -8,10 +8,10 @@ const auth = require("../middlewares/auth.middleware")
 const router = express.Router();
 
 //owner restaurant route
-router.post("/owner/restaurant", auth, isOwner, createRestaurant);
-router.get("/owner/restaurant", auth, isOwner, ownerShowRestaurants);
-router.patch("/owner/restaurant", auth, isOwner, updateRestaurant);
-router.delete("/owner/restaurant", auth, isOwner, deleteRestaurant);
+router.post("/restaurant", auth, isOwner, createRestaurant);
+router.get("/restaurant/dashboard/:restaurantName", auth, isOwner, ownerShowRestaurants);
+router.patch("/restaurant/dashboard/:restaurantName", auth, isOwner, updateRestaurant);
+router.delete("/restaurant/dashboard/:restaurantName", auth, isOwner, deleteRestaurant);
 
 // restaurant routes
 router.get("/restaurants", showRestaurants);
@@ -19,16 +19,16 @@ router.get("/restaurants/:id", showSingleRestaurant);
 
 // menu routes
 router.get("/rest/menus", showMenus);
-router.get("/restaurants/:id/menus", auth, isOwner, showOwnerMenus);
-router.post("/restaurants/:id/menus", auth, isOwner, createMenu);
-router.get("/restaurants/:id/menus/:menuId", showMenuItem);
-router.patch("/restaurants/:id/menus/:menuId", auth, isOwner, updateMenuItem);
-router.delete("/restaurants/:id/menus/:menuId", auth, isOwner, deleteMenuItem);
+router.get("/restaurant/dashboard/menus", auth, isOwner, showOwnerMenus);
+router.post("/restaurant/dashboard/menus", auth, isOwner, createMenu);
+router.get("/restaurant/dashboard/:menuId", showMenuItem);
+router.patch("/restaurant/dashboard/menus/:menuId", auth, isOwner, updateMenuItem);
+router.delete("/rrestaurant/dashboard/menus/:menuId", auth, isOwner, deleteMenuItem);
 
 
 // review routes
-router.post("/restaurants/:id/menu/:menuId/review", auth, createReview);
-router.patch("/restaurants/:id/menu/:menuId/review/:reviewId", auth, updateReview);
-router.delete("/restaurants/:id/menu/:menuId/review/:reviewId", auth, deleteReview);
+router.post("/menu/review", auth, createReview);
+router.patch("/menu/review/:reviewId", auth, updateReview);
+router.delete("/menu/review/:reviewId", auth, deleteReview);
 
 module.exports=router

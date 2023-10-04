@@ -1,7 +1,7 @@
 const  { Schema, model } = require("mongoose")
 
 const reviewSchema = new Schema({
-    comment: {
+    review: {
         type: String,
         trim: true
     },

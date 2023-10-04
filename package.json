@@ -15,7 +15,9 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.5.3",
     "nodemailer": "^6.9.5",
-    "validator": "^13.11.0"
+    "swagger-ui-express": "^5.0.0",
+    "validator": "^13.11.0",
+    "yaml": "^2.3.2"
   },
   "devDependencies": {
     "concurrently": "^8.2.1",
