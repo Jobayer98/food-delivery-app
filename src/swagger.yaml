@@ -7,7 +7,7 @@ info:
 servers:
   - url: http://localhost:3000/api/v1
     description: Development server
-  - url: https://e-learning-app.herokuapp.com/api/v1
+  - url: https://beautiful-cow-parka.cyclic.cloud/api/v1
     description: Production server
 
 tags:
