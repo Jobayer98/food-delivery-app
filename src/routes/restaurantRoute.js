@@ -9,7 +9,7 @@ const router = express.Router();
 
 // public restaurant routes
 router.get("/restaurants", showRestaurants);
-router.get("/restaurants/:id", showSingleRestaurant);
+router.get("/restaurants/:id", showOwnerMenus);
 
 // public menu routes
 router.get("/menus", showMenus);
