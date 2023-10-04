@@ -31,20 +31,20 @@ The Food Delivery System API is a powerful platform that allows users to order f
 
 ## API Endpoints 
 
-  - /api/v1/auth: Authentication and user registration (/signup, /signin, /logout).
-  - /api/v1//checkout/place-order Create a new order
-  - /api/v1/order-tracking Track the order
-  - /api/v1/restaurants Show all available restaurant name
-  - /api/v1/restaurants/:id Show specefic restaurant menus
-  - /api/v1/menus Show all available menu
-  - /api/v1/menus/:menuId Show a menu item
-  - /api/v1/restaurant Create a new Restaurant
-  - /api/v1/restaurant/dashboard Read, Update and Close a Restaurant.
-  - /api/v1/restaurant/dashboard/menus Show all restaurant owner menu
-  - /api/v1/restaurant/dashboard/menu Create a Menu
-  - /api/v1/restaurant/dashboard/menus/:menuId Update and Delete menu
-  - /api/v1/menu/:menuId/review Give a review
-  - /api/v1/menu/:menuId/review/:reviewId Update and Delete Review
+  - /api/v1/auth:  ->Authentication and user registration (/signup, /signin, /logout).
+  - /api/v1//checkout/place-order  ->Create a new order
+  - /api/v1/order-tracking  ->Track the order
+  - /api/v1/restaurants  ->Show all available restaurant name
+  - /api/v1/restaurants/:id  ->Show specefic restaurant menus
+  - /api/v1/menus  ->Show all available menu
+  - /api/v1/menus/:menuId  ->Show a menu item
+  - /api/v1/restaurant  ->Create a new Restaurant
+  - /api/v1/restaurant/dashboard  ->Read, Update and Close a Restaurant.
+  - /api/v1/restaurant/dashboard/menus  ->Show all restaurant owner menu
+  - /api/v1/restaurant/dashboard/menu  ->Create a Menu
+  - /api/v1/restaurant/dashboard/menus/:menuId  ->Update and Delete menu
+  - /api/v1/menu/:menuId/review  ->Give a review
+  - /api/v1/menu/:menuId/review/:reviewId  ->Update and Delete Review
 
 
 ## Technologies Used
