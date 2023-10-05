@@ -1,41 +1,78 @@
 const  { Schema, model } = require("mongoose")
 
 const orderSchema = new Schema({
+    shippingInfo:{
+            address: {
+                type: String,
+                required: true,
+            },
+            city: {
+                type: String,
+                required: true,
+                trim: true
+            },
+            phone: {
+                type: String,
+                required: true,
+                trim: true
+            },
+            postalCode: {
+                type: String,
+                required: true,
+                trim: true
+            },
+        },
     orderStatus: {
         type: String,
+        required: true,
         default: "pending",
-        enum: ["pending","confirmed", "canceled", "delivered"],
     },
     totalAmount: {
         type: Number,
         required: true,
         trim: true
     },
-    orderDate: {
-        type: Date,
-        default: Date.now,
+    deliveryFee: {
+        type: Number,
         required: true,
+        trim: true
     },
     orderItems: [{
-        type: Schema.Types.ObjectId,
-        ref: "Menu",
-        required: true,
+        name: {
+            type: String,
+            required: true,
+            trim: true
+        },
+        quantity: {
+            type: Number,
+            required: true,
+            trim: true
+        },
+        price: {
+            type: Number,
+            required: true,
+            trim: true
+        },
+        image: {
+            id: String,
+            secure_url: String
+        },
+        menu: {
+            type: Schema.Types.ObjectId,
+            ref: "Menu",
+            required: true,
+        }
+
     }],
     customerId: {
         type: Schema.Types.ObjectId,
         ref: "User",
         required: true,
     },
-    restaurantId: [{
-        type: Schema.Types.ObjectId,
-        ref: "Restaurant",
-        required: true,
-    }]
-    // driverId: {
-    //     type: Schema.Types.ObjectId,
-    //     ref: "User",
-    //     required: false,
-    // }
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
 })
 
 const OrderModel = model("Order", orderSchema);

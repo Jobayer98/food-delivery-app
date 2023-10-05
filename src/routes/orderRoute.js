@@ -4,7 +4,10 @@ const auth = require("../middlewares/auth.middleware");
 
 const router = express.Router();
 
-router.post("/checkout/place-order", auth, createOrder);
-router.get("/order-tracking", auth, showOrders);
+router.get("/order/create")
+router.get("/order/:id")
+router.get("/admin/orders")
+router.get("/admin/order/:id")
+router.delete("/admin/order/:id")
 
 module.exports=router;

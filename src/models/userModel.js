@@ -44,16 +44,24 @@ const userSchema = new Schema({
             trim: true,
             default: null
         },
-        area : {
+        street: {
             type: String,
-            trim: true,
-            default: null
+        },
+        postalCode: {
+            type: String,
+        },
+        houseNumber: {
+            type: String,
         }
     },
     phone: {
         type: String,
         trim: true,
         default: null
+    },
+    image: {
+        id: String,
+        secure_url: String
     },
     role: {
         type: String,

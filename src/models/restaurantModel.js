@@ -13,7 +13,7 @@ const restaurantSchema = new Schema({
             required: true,
             trim: true
         },
-        area : {
+        street : {
             type: String,
             required: true,
             trim: true
