@@ -12,7 +12,7 @@ const signup = async(req, res, next) => {
 
         user = await User.create(req.body);
         const token = await user.generateToken();
-        
+        user.password = undefined;
         res.status(201).json({
             success: true,
             data: user,
@@ -31,14 +31,14 @@ const login = async(req, res, next) => {
             throw new CustomError("Account doesn't exist", 400);
         }
 
-        const isMatch = user.comparePassword(password);
+        const isMatch = await user.comparePassword(password);
 
         if(!isMatch){
             throw new CustomError("invalid credentials", 401);
         }
 
         const token = await user.generateToken();
-
+        user.password = undefined;
         res.status(200).json({
             success: true,
             data: user,
