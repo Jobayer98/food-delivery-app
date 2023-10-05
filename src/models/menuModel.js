@@ -20,6 +20,15 @@ const menuSchema = new Schema({
         required: true,
         trim: true
     },
+    image:{
+      id: String,
+      secure_url: String
+    },
+    origin: {
+        type: String,
+        required: true,
+        trim: true
+    },
     reviews: [{
             user: {
               type: Schema.Types.ObjectId,
