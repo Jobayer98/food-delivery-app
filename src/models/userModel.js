@@ -2,6 +2,7 @@ const  { Schema, model } = require("mongoose")
 const  validator = require("validator")
 const  bcrypt = require("bcryptjs")
 const  jwt = require("jsonwebtoken")
+const crypto = require("crypto")
 
 
 const userSchema = new Schema({
@@ -28,14 +29,14 @@ const userSchema = new Schema({
         required: true,
         minlength: [6, "Password must be at least 6 characters"],
         trim: true,
-        validate: {
-            validator: function (password) {
-              const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/;
+        // validate: {
+        //     validator: function (password) {
+        //       const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/;
               
-              return passwordRegex.test(password);
-            },
-            message: "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character",
-          }
+        //       return passwordRegex.test(password);
+        //     },
+        //     message: "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character",
+        //   }
     },
     address: {
         city: {
@@ -58,6 +59,12 @@ const userSchema = new Schema({
         type: String,
         default: "customer",
         enum: ["customer", "admin", "owner", "driver"]
+    },
+    forgotPasswordToken: {
+        type: String,
+    },
+    forgotPasswordTokenExpiry: {
+        type: Date,
     },
     tokens: [{
         token: {
@@ -89,6 +96,16 @@ userSchema.methods.generateToken = async function () {
     const token =  jwt.sign({ _id: this._id, email: this.email }, process.env.JWT_SECRET);
     this.tokens = this.tokens.concat({ token });
     await this.save();
+
+    return token;
+}
+
+userSchema.methods.getforgotPasswordToken = async function () {
+    const token = crypto.randomBytes(32).toString("hex");
+    
+    this.forgotPasswordToken = crypto.createHash("sha256").update(token).digest("hex");
+
+    this.forgotPasswordTokenExpiry = Date.now() + 5 * 60 * 1000;
 
     return token;
 }
