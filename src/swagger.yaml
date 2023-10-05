@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: Food Delivery App
+  title: HungryHub
   description: The Food Delivery System API is a powerful platform that allows users to order food from various restaurants, manage their profiles, and enables restaurant owners to manage their menus. This document provides an overview of the key features and functionalities of the API.
   version: 1.0.0
 
