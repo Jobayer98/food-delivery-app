@@ -6,6 +6,7 @@ const YAML = require('yaml')
 const path = require('path');
 
 const authRouter = require("./routes/authRoute");
+const userRouter = require("./routes/userRoute");
 const restaurantRouter = require("./routes/restaurantRoute");
 const orderRouter = require("./routes/orderRoute");
 
@@ -20,10 +21,12 @@ app.use(express.json());
 
 
 app.use("/api/v1", authRouter);
+app.use("/api/v1", userRouter)
 app.use("/api/v1", restaurantRouter);
 app.use("/api/v1", orderRouter);
 
 app.get("/", (req, res)=>{
+    // console.log(req)
     res.send("Welcome to Food Delivery System")
 
 })
