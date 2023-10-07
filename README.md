@@ -1,4 +1,4 @@
-# Food Delivery System API
+# Food Delivery API
 
 [API Link](https://jobayer98.github.io/food-delivery-app/)
 
