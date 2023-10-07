@@ -2,7 +2,7 @@ const express = require("express")
 const { createRestaurant, deleteRestaurant, showRestaurants, showSingleRestaurant, updateRestaurant, ownerShowRestaurants } = require("../controllers/restaurantController")
 const { createMenu, deleteMenuItem, showMenus, updateMenuItem, showMenuItem, showOwnerMenus } = require("../controllers/menuController")
 const { createReview, deleteReview, updateReview } = require("../controllers/reviewController")
-const isOwner = require("../middlewares/isOwnermiddleware")
+const isAdmin = require("../middlewares/isAdmin")
 const auth = require("../middlewares/auth.middleware")
 
 const router = express.Router();
@@ -18,16 +18,16 @@ router.get("/menus/:menuId", showMenuItem);
 
 // Protected routes
 //owner restaurant route
-router.post("/restaurant", auth, isOwner, createRestaurant);
-router.get("/restaurant/dashboard", auth, isOwner, ownerShowRestaurants);
-router.patch("/restaurant/dashboard", auth, isOwner, updateRestaurant);
-router.delete("/restaurant/dashboard", auth, isOwner, deleteRestaurant);
+router.post("/admin", auth, isAdmin, createRestaurant);
+router.get("/admin/dashboard", auth, isAdmin, ownerShowRestaurants);
+router.patch("/admin/dashboard", auth, isAdmin, updateRestaurant);
+router.delete("/admin/dashboard", auth, isAdmin, deleteRestaurant);
 
 // owner menu routes
-router.get("/restaurant/dashboard/menus", auth, isOwner, showOwnerMenus);
-router.post("/restaurant/dashboard/menu", auth, isOwner, createMenu);
-router.patch("/restaurant/dashboard/menus/:menuId", auth, isOwner, updateMenuItem);
-router.delete("/restaurant/dashboard/menus/:menuId", auth, isOwner, deleteMenuItem);
+router.get("/admin/dashboard/menus", auth, isAdmin, showOwnerMenus);
+router.post("/admin/dashboard/menu", auth, isAdmin, createMenu);
+router.patch("/admin/dashboard/menus/:menuId", auth, isAdmin, updateMenuItem);
+router.delete("/admin/dashboard/menus/:menuId", auth, isAdmin, deleteMenuItem);
 
 
 // review routes
