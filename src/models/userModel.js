@@ -29,14 +29,14 @@ const userSchema = new Schema({
         required: true,
         minlength: [6, "Password must be at least 6 characters"],
         trim: true,
-        // validate: {
-        //     validator: function (password) {
-        //       const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/;
+        validate: {
+            validator: function (password) {
+              const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/;
               
-        //       return passwordRegex.test(password);
-        //     },
-        //     message: "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character",
-        //   }
+              return passwordRegex.test(password);
+            },
+            message: "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character",
+          }
     },
     address: {
         city: {
@@ -59,7 +59,7 @@ const userSchema = new Schema({
         trim: true,
         default: null
     },
-    image: {
+    image: {  
         id: String,
         secure_url: String
     },
