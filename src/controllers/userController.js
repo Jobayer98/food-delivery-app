@@ -1,3 +1,4 @@
+const cloudinary = require("cloudinary").v2
 const User = require("../models/userModel");
 const CustomError = require("../utility/CustomError");
 const mailHelper = require("../utility/emailHelper");
@@ -18,6 +19,23 @@ const userDashboard = async(req, res, next) => {
 
 const updateUserInfo = async(req, res, next) => {
     try {
+        if(req.files){
+            const user = await User.findById(req.user._id);
+            if(user.image.id){
+                await cloudinary.uploader.destroy(user.image.id);
+            }
+            const result = await cloudinary.uploader.upload(req.files.avatar.tempFilePath, {
+                folder: "users",
+                width: 150,
+                crop: "scale"
+            });
+
+            req.body.image = {
+                id: result.public_id,
+                secure_url: result.secure_url
+            }
+            
+        }
         const user = await User.findByIdAndUpdate(req.user._id, req.body, {new: true, runValidators: true});
 
         res.status(200).json({
