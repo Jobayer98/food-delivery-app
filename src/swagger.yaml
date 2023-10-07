@@ -55,8 +55,8 @@ paths:
           description: Bad request
         500:
           description: Internal server error
-  /signin:
-    post:
+  /login:
+    get:
       summary: Sign in user using email and password
       tags:
         - Authentication
