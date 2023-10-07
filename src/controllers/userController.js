@@ -19,7 +19,23 @@ const userDashboard = async(req, res, next) => {
 
 const updateUserInfo = async(req, res, next) => {
     try {
-        const user = await User.findByIdAndUpdate(req.user._id, req.body, {new: true, runValidators: true});
+        let user = await User.findById(req.user._id);
+        if(req.files){
+            if(user.image.id){
+                await cloudinary.uploader.destroy(user.image.id);
+            }
+            const result = await cloudinary.uploader.upload(req.files.avatar.tempFilePath, {
+                folder: "users",
+                width: 150,
+                crop: "scale"
+            });
+
+            req.body.image = {
+                id: result.public_id,
+                secure_url: result.secure_url
+            }
+        }
+        user = await User.findByIdAndUpdate(req.user._id, req.body, {new: true, runValidators: true});
 
         res.status(200).json({
             success: true,
