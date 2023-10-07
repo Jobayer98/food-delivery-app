@@ -152,6 +152,37 @@ paths:
           description: Bad request
         500:
           description: Internal server error
+  /user/upload-image:
+    post:
+      security:
+        - bearerAuth: []
+      summary: Upload user profile photo
+      tags:
+        - User
+      requestBody:
+        required: true
+        description: Upload user profile photo
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              type: object
+              schema:
+                properties:
+                  success: 
+                    type: boolean
+                  message: 
+                    type: string
+
   /user/update-password:
     patch:
       security: 

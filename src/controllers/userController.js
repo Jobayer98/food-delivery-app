@@ -19,8 +19,20 @@ const userDashboard = async(req, res, next) => {
 
 const updateUserInfo = async(req, res, next) => {
     try {
+        const user = await User.findByIdAndUpdate(req.user._id, req.body, {new: true, runValidators: true});
+
+        res.status(200).json({
+            success: true,
+            data: user
+        })
+    } catch (error) {
+        next( new CustomError(error, 400) );
+    }
+} 
+const uploadUserPhoto = async(req, res, next) => {
+    try {
+        let user = await User.findById(req.user._id);
         if(req.files){
-            const user = await User.findById(req.user._id);
             if(user.image.id){
                 await cloudinary.uploader.destroy(user.image.id);
             }
@@ -30,17 +42,16 @@ const updateUserInfo = async(req, res, next) => {
                 crop: "scale"
             });
 
-            req.body.image = {
+            user.image = {
                 id: result.public_id,
                 secure_url: result.secure_url
             }
-            
+            await user.save();
         }
-        const user = await User.findByIdAndUpdate(req.user._id, req.body, {new: true, runValidators: true});
 
         res.status(200).json({
             success: true,
-            data: user
+            data: "Photo uploaded successfully"
         })
     } catch (error) {
         next( new CustomError(error, 400) );
@@ -150,5 +161,6 @@ module.exports = {
     updateUserInfo,
     updateUserPassword,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    uploadUserPhoto
 }
