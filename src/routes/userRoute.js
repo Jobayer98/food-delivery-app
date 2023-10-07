@@ -7,7 +7,7 @@ const router = express.Router();
 router.get("/userdashboard", auth, userDashboard)
 router.patch("/userdashboard/update", auth, updateUserInfo)
 router.patch("/user/update-password", auth, updateUserPassword)
-router.get("/forgotpassword", auth, forgotPassword)
+router.get("/forgot-password", auth, forgotPassword)
 router.post("/password/reset/:token", auth, resetPassword)
 
 module.exports=router;

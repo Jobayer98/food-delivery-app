@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: HungryHub
-  description: The Food Delivery System API is a powerful platform that allows users to order food from various restaurants, manage their profiles, and enables restaurant owners to manage their menus. This document provides an overview of the key features and functionalities of the API.
+  description: This is a food delivery API that allows users to order food from various restaurants, manage their profiles, and enables restaurant owners to manage their menus. This document provides an overview of the key features and functionalities of the API.
   version: 1.0.0
 
 servers:
@@ -11,24 +11,24 @@ servers:
     description: Production server
 
 tags:
-  - name: Auth
-    description: Authentication
+  - name: Authentication
+    description: User authentication
   - name: User
     description: User management
   - name: Orders
     description: Order management
-  - name: Restaurant owner
+  - name: Admin
     description: Restaurant management
 
 paths:
-  /auth/signup:
+  /signup:
     post:
-      summary: Create a new user
+      summary: Create a new user using email, password and name
       tags:
-        - Auth
+        - Authentication
       requestBody:
         required: true
-        description: Create user object
+        description: password must be at least 6 characters and contain a number, uppercase and lowercase letter and a special character
         content:
           application/json:
             schema:
@@ -50,19 +50,19 @@ paths:
           content:
             application/json:
               schema:
-                  $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/User'
         400:
           description: Bad request
         500:
           description: Internal server error
-  /auth/signin:
+  /signin:
     post:
-      summary: Sign in user
+      summary: Sign in user using email and password
       tags:
-        - Auth
+        - Authentication
       requestBody:
         required: true
-        description: Create user object
+        description: Login user object 
         content:
           application/json:
             schema:
@@ -81,54 +81,17 @@ paths:
           content:
             application/json:
               schema:
+                type: object
                 $ref: '#/components/schemas/User'
         400:
           description: Bad request
         500:
           description: Internal server error
-  /auth/logout:
+  /logout:
     post:
       security: 
         - bearerAuth: []
       summary: Sign out user
-      tags:
-        - Auth
-      responses:
-        200:
-          description: successful operation
-        500:
-          description: Internal server error
-  /auth/reset:
-    post:
-      security:
-        - bearerAuth: []
-      summary: Reset password
-      tags:
-        - Auth
-      requestBody:
-        required: true
-        description: Reset password
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  format: email
-      responses:
-        200:
-          description: successful operation
-        400:
-          description: Bad request
-        500:
-          description: Internal server error
-
-  /user/dashboard:
-    get:
-      security: 
-        - bearerAuth: []
-      summary: Get user dashboard
       tags:
         - User
       responses:
@@ -137,18 +100,42 @@ paths:
           content:
             application/json:
               schema:
+                type: object
+                properties:
+                  success: 
+                    type: boolean
+                  message: 
+                    type: string
+        500:
+          description: Internal server error
+        
+  /userdashboard:
+    get:
+      security: 
+        - bearerAuth: []
+      summary: Show information about user
+      tags:
+        - User
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
                 $ref: '#/components/schemas/User'
         500:
           description: Internal server error
+  /userdashboard/update:
     patch:
       security:
         - bearerAuth: []
-      summary: Update user
+      summary: Update user information
       tags:
         - User
       requestBody:
         required: true
-        description: Update a user
+        description: Update a user information
         content:
           application/json:
             schema:
@@ -156,8 +143,127 @@ paths:
       responses:
         200:
           description: successful operation
+          content:
+            application/json:
+              type: object
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: Bad request
+        500:
+          description: Internal server error
+  /user/update-password:
+    patch:
+      security: 
+        - bearerAuth: []
+      summary: Update user password
+      tags:
+        - User
+      requestBody:
+        required: true
+        description: password must be at least 6 characters and contain a number, uppercase and lowercase letter and a special character
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                  oldPassword:
+                    type: string
+                    example: password
+                  newPassword:
+                    type: string
+                    example: password
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+        400:
+          description: Bad request
+        
+  /forgot-password:
+    get:
+      security: 
+        - bearerAuth: []
+      summary: Send reset password link
+      tags:
+        - User
+      requestBody:
+        required: true
+        description: Send reset password link
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: john@example.com
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: 
+                    type: boolean
+                  message: 
+                    type: string
+        400:
+          description: Bad request
+        500:
+          description: Internal server error
+        
+  /password/reset/{token}:
+    post:
+      security: 
+        - bearerAuth: []
+      summary: Reset password
+      tags:
+        - User
+      requestBody:
+        required: true
+        description: Reset password
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                  example: password
+                confirmPassword:
+                  type: string
+                  example: password
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: 
+                    type: boolean
+                  message: 
+                    type: string
+        400:
+          description: Bad request
+        500:
+          description: Internal server error
+        
 
-  /checkout/place-order:
+  /order/create:
     post:
       security: 
         - bearerAuth: []
@@ -170,11 +276,7 @@ paths:
         content:
           application/json:
             schema:
-              type: array
-              items:
-                type: string
-                example: "item1"
-
+              $ref: '#/components/schemas/Order'
       responses:
         200:
           description: successful operation
@@ -186,7 +288,8 @@ paths:
           description: Bad request
         500:
           description: Internal server error
-  /order-tracking:
+        
+  /my-order:
     get:
       security: 
         - bearerAuth: []
@@ -204,6 +307,7 @@ paths:
           description: Bad request
         500:
           description: Internal server error
+        
 
   /restaurants:
     get:
@@ -234,9 +338,10 @@ paths:
                           example: Central
         500:
           description: Internal server error
+        
   /restaurants/{restaurantId}:
     get:
-      summary: Get Restaurant by id
+      summary: Get all menu by restaurant
       tags:
         - User
       parameters:
@@ -249,22 +354,12 @@ paths:
           content:
             application/json:
               schema:
-                  type: object
-                  properties:
-                    name:
-                      type: string
-                      example: Pizza Hut
-                    address:
-                      type: object
-                      properties:
-                        city:
-                          type: string
-                          example: London
-                        area:
-                          type: string
-                          example: Central
+                type: array
+                items:
+                  $ref: '#/components/schemas/Menu'
         500:
           description: Internal server error
+        
   /menus:
     get:
       summary: Get all menus
@@ -281,6 +376,7 @@ paths:
                   $ref: '#/components/schemas/Menu'
         500:
           description: Internal server error
+        
   /menu/{menuId}:
     get:
       summary: Get menu by id
@@ -299,7 +395,7 @@ paths:
                 $ref: '#/components/schemas/Menu'
         500:
           description: Internal server error
-  /menu/review:
+  /menu/{menuId}/review:
     post:
       security: 
         - bearerAuth: []
@@ -312,14 +408,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Review'
+              $ref: '#/components/Review'
       responses:
         200:
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Review'
+                $ref: '#/components/Review'
         400:
           description: Bad request
         500:
@@ -343,14 +439,14 @@ paths:
         content:
           application/json:
             schema:
-              type: string
+              $ref: '#/components/Review'
       responses:
         200:
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Review'
+                $ref: '#/components/Review'
         500:
           description: Internal server error
     delete:
@@ -366,60 +462,55 @@ paths:
         - in: path
           name: reviewId
           required: true
-      requestBody:
-        required: true
-        description: Delete a review
-        content:
-          application/json:
-            schema:
-              type: string
       responses:
         200:
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Review'
+                $ref: '#/components/Review'
         500:
           description: Internal server error
 
-  /restaurant:
+  /admin:
     post:
       security: 
         - bearerAuth: []
-      summary: Create restaurant
+      summary: Create restaurant 
       tags:
-        - Restaurant owner
+        - Admin
       requestBody:
         required: true
         description: Create a restaurant
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Restaurant'
+              $ref: '#/components/schemas/Admin'
       responses:
         200:
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Restaurant'
+                $ref: '#/components/schemas/Admin'
         400:
           description: Bad request
         500:
           description: Internal server error
-  /restaurant/dashboard:
+  /admin/dashboard:
     get:
       summary: Get restaurant info
+      security:
+        - bearerAuth: []
       tags:
-        - Restaurant owner
+        - Admin
       responses:
         200:
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Restaurant'
+                $ref: '#/components/schemas/Admin'
         500:
           description: Internal server error
     patch:
@@ -427,21 +518,21 @@ paths:
         - bearerAuth: []
       summary: Update restaurant
       tags:
-        - Restaurant owner
+        - Admin
       requestBody:
         required: true
         description: Update a restaurant
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Restaurant'
+              $ref: '#/components/schemas/Admin'
       responses:
         200:
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Restaurant'
+                $ref: '#/components/schemas/Admin'
         400:
           description: Bad request
         500:
@@ -451,23 +542,23 @@ paths:
         - bearerAuth: []
       summary: Delete restaurant
       tags:
-        - Restaurant owner
+        - Admin
       responses:
         200:
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Restaurant'
+                $ref: '#/components/schemas/Admin'
         500:
           description: Internal server error
-  /restaurant/dashboard/menu:
+  /admin/dashboard/menu:
     post:
       security:
         - bearerAuth: []
       summary: Create menu
       tags:
-        - Restaurant owner
+        - Admin
       requestBody:
         required: true
         description: Create a menu
@@ -486,13 +577,13 @@ paths:
           description: Bad request
         500:
           description: Internal server error
-  /restaurant/dashboard/menus:
+  /admin/dashboard/menus:
     get:
       security:
         - bearerAuth: []
       summary: Get all menus
       tags:
-        - Restaurant owner
+        - Admin
       responses:
         200:
           description: successful operation
@@ -504,13 +595,13 @@ paths:
                   $ref: '#/components/schemas/Menu'
         500:
           description: Internal server error
-  /restaurant/dashboard/menus/{menuId}:
+  /admin/dashboard/menus/{menuId}:
     patch:
       security: 
         - bearerAuth: []
       summary: Update menu
       tags:
-        - Restaurant owner
+        - Admin
       parameters:
         - in: path
           name: menuId
@@ -538,7 +629,7 @@ paths:
         - bearerAuth: []
       summary: Delete menu
       tags:
-        - Restaurant owner
+        - Admin
       parameters:
         - in: path
           name: menuId
@@ -554,23 +645,25 @@ components:
     Order:
       type: object
       properties:
+        shippingInfo:
+          schema:
+            $ref: '#/components/shippingInfo'
         orderStatus:
           type: string
           example: pending
         totalAmount:
           type: number
           example: 100
-        items:
+        orderItems:
           type: array
           items:
-            $ref: '#/components/schemas/Item'      
-    Item:
-      type: object
-      properties:
-        name:
+            $ref: '#/components/Item'      
+        deliveryFree:
+          type: number
+          example: 0
+        customerId:
           type: string
-          example: pizza
-    Restaurant:
+    Admin:
       type: object
       properties:
         name:
@@ -609,12 +702,6 @@ components:
         restaurantName:
           type: string
           example: Pizza Hut
-    Review:
-      type: object
-      properties:
-        review:
-          type: string
-          example: Good
     User:
       type: object
       properties:
@@ -627,9 +714,15 @@ components:
             city:
               type: string
               example: London
-            area:
+            street:
               type: string
               example: Central
+            postalCode:
+              type: string
+              example: 123
+            houseNumber:
+              type: string
+              example: 123
         phone:
           type: string
           example: 123456789
@@ -637,8 +730,58 @@ components:
           type: string
           format: email
           example: alice@example.com
+        image: 
+          type: object
+          properties:
+            id:
+              type: string
+            url:
+              type: string
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
+
+  Review:
+      type: object
+      properties:
+        review:
+          type: string
+          example: Good
+  Item:
+      type: object
+      properties:
+        name:
+          type: string
+          example: pizza
+        price:
+          type: number
+          example: 10
+        quantity:
+          type: number
+          example: 5
+        image:
+          properties:
+            id: 
+              type: string
+            url: 
+              type: string
+        menuId:
+          type: string
+          example: 1
+  shippingInfo:
+      type: object
+      properties:
+        address:
+          type: string
+          example: 123 Central
+        city:
+          type: string
+          example: London
+        postalCode:
+          type: string
+          example: 1212
+        phone:
+          type: string
+          example: 123456789
