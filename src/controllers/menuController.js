@@ -1,3 +1,4 @@
+const cloudinary = require("cloudinary").v2;
 const CustomError = require("../utility/CustomError");
 const MenuModel = require("../models/menuModel");
 const RestaurantModel = require("../models/restaurantModel");
@@ -38,6 +39,20 @@ const showMenuItem = async(req, res, next) => {
 
 const createMenu = async(req, res, next) => {
     try {
+        if(!req.files){
+            return next( new CustomError("Please upload an image", 400) );
+        }
+
+        const result = await cloudinary.uploader.upload(req.files.image.tempFilePath, {
+            folder: "menus",
+            width: 500,
+            crop: "scale"
+        });
+        req.body.image = {
+            id: result.public_id,
+            secure_url: result.secure_url
+        }
+
         const [id] = await RestaurantModel.where({ ownerId: req.user._id }).select("_id");
         const item = await MenuModel.create({...req.body, restaurantId: id._id});
         
@@ -53,7 +68,11 @@ const createMenu = async(req, res, next) => {
 
 const showOwnerMenus = async(req, res, next) => {
     try {
-        const menu = await MenuModel.find({ restaurantId: id._id });
+        const restaurant = await RestaurantModel.findOne({ ownerId: req.user._id });
+        if (!restaurant){
+            throw new CustomError("Restaurant not found", 404);
+        }
+        const menu = await MenuModel.find({ restaurantId: restaurant._id });
         if (!menu || menu.length === 0){
             throw new CustomError("Menus not found", 404);
         }
@@ -71,16 +90,21 @@ const showOwnerMenus = async(req, res, next) => {
 const updateMenuItem = async(req, res, next) => {
     try {
         const { menuId } = req.params;
-        const updates = Object.keys(req.body);
-        const validKeys = ["name", "description", "price", "category"];
 
-        const isValidKey = updates.every((key) => {
-            return validKeys.includes(key);
-        })
-
-        if(!isValidKey){
-            throw new CustomError("Invalid updates", 400);
+        if(req.files){
+            await cloudinary.uploader.destroy(user.image?.id);
+            const result = await cloudinary.uploader.upload(req.files.image.tempFilePath, {
+                folder: "menus",
+                width: 500,
+                crop: "scale"
+            });
+            req.body.image = {
+                id: result.public_id,
+                secure_url: result.secure_url
+            }
         }
+
+        
 
         const item = await MenuModel.findByIdAndUpdate(menuId, req.body, {new: true, runValidators: true});
         
