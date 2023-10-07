@@ -21,8 +21,14 @@ const menuSchema = new Schema({
         trim: true
     },
     image:{
-      id: String,
-      secure_url: String
+      id: {
+        type: String,
+        required: true
+      },
+      secure_url: {
+        type: String,
+        required: true
+      }
     },
     origin: {
         type: String,
