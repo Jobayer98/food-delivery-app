@@ -4,6 +4,8 @@ const swaggerUi = require('swagger-ui-express');
 const fs = require("fs")
 const YAML = require('yaml')
 const path = require('path');
+const fileupload = require("express-fileupload");
+const cloudinary = require("cloudinary").v2
 
 const authRouter = require("./routes/authRoute");
 const userRouter = require("./routes/userRoute");
@@ -14,10 +16,21 @@ const app = express();
 const file = fs.readFileSync(path.join(__dirname, './swagger.yaml'), 'utf8');
 const swaggerDocument = YAML.parse(file)
 
+//cloudinary configation          
+cloudinary.config({ 
+  cloud_name: process.env.CLOUDINARY_NAME, 
+  api_key: process.env.CLOUDINARY_KEY, 
+  api_secret: process.env.CLOUDINARY_SECRET 
+});
+
 //middleware
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(cors())
 app.use(express.json());
+app.use(fileupload({
+    useTempFiles: true,
+    tempFileDir: '/tmp/'
+}));
 
 
 app.use("/api/v1", authRouter);
