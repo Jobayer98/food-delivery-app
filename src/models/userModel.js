@@ -1,122 +1,143 @@
-const  { Schema, model } = require("mongoose")
-const  validator = require("validator")
-const  bcrypt = require("bcryptjs")
-const  jwt = require("jsonwebtoken")
-const crypto = require("crypto")
+const { Schema, model } = require("mongoose");
+const validator = require("validator");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 
-
-const userSchema = new Schema({
+const userSchema = new Schema(
+  {
     name: {
-        type: String,
-        required: true,
-        trim: true
+      type: String,
+      required: true,
+      trim: true,
     },
     email: {
-        type: String,
-        required: true,
-        unique: true,
-        trim: true,
-        lowercase: true,
-        validate(value) {
-            if (!validator.isEmail(value)) {
-                throw new Error("Email is invalid");
-            }
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      lowercase: true,
+      validate(value) {
+        if (!validator.isEmail(value)) {
+          throw new Error("Email is invalid");
         }
-        
+      },
     },
     password: {
-        type: String,
-        required: true,
-        minlength: [6, "Password must be at least 6 characters"],
-        trim: true,
-        validate: {
-            validator: function (password) {
-              const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/;
-              
-              return passwordRegex.test(password);
-            },
-            message: "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character",
-          }
+      type: String,
+      required: true,
+      minlength: [6, "Password must be at least 6 characters"],
+      trim: true,
+      validate: {
+        validator: function (password) {
+          const passwordRegex =
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/;
+
+          return passwordRegex.test(password);
+        },
+        message:
+          "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character",
+      },
     },
     address: {
-        city: {
-            type: String,
-            trim: true,
-            default: null
-        },
-        street: {
-            type: String,
-        },
-        postalCode: {
-            type: String,
-        },
-        houseNumber: {
-            type: String,
-        }
-    },
-    phone: {
+      city: {
         type: String,
         trim: true,
-        default: null
+        default: null,
+      },
+      street: {
+        type: String,
+      },
+      postalCode: {
+        type: String,
+      },
     },
-    image: {  
-        id: String,
-        secure_url: String
+    phone: {
+      type: String,
+      trim: true,
+      default: null,
+    },
+    image: {
+      id: String,
+      secure_url: String,
     },
     role: {
-        type: String,
-        default: "customer",
-        enum: ["customer", "admin", "owner", "driver"]
+      type: String,
+      default: "customer",
+      enum: ["customer", "admin", "owner"],
     },
     forgotPasswordToken: {
-        type: String,
+      type: String,
     },
     forgotPasswordTokenExpiry: {
-        type: Date,
+      type: Date,
     },
-    tokens: [{
+    tokens: [
+      {
         token: {
-            type: String,
-            required: true
-        }
-    }]
+          type: String,
+          required: true,
+        },
+      },
+    ],
+  },
+  {
+    timestamps: true,
+  }
+);
 
-},
-{
-    timestamps: true
-})
-
+// hashing password
 userSchema.pre("save", async function (next) {
-    if (!this.isModified("password")) {
-        next();
-    }
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
+  if (!this.isModified("password")) {
     next();
-})
+  }
+  const salt = bcrypt.genSalt(process.env.PASS_SALT);
+  this.password = bcrypt.hash(this.password, salt);
+  next();
+});
 
+//hide user credentials
+userSchema.methods.toJSON = function () {
+  const user = this;
+  const userObject = user.toObject();
+  delete userObject.password;
+  delete userObject.tokens;
+  delete userObject.forgotPasswordToken;
+  delete userObject.forgotPasswordTokenExpiry;
+
+  return userObject;
+};
+
+//match user password
 userSchema.methods.comparePassword = async function (password) {
-    return await bcrypt.compare(password, this.password);
-}
+  return await bcrypt.compare(password, this.password);
+};
 
+//generate authentication token
 userSchema.methods.generateToken = async function () {
+  const token = jwt.sign(
+    { _id: this._id, email: this.email },
+    process.env.JWT_SECRET
+  );
+  this.tokens = this.tokens.concat({ token });
+  await this.save();
 
-    const token =  jwt.sign({ _id: this._id, email: this.email }, process.env.JWT_SECRET);
-    this.tokens = this.tokens.concat({ token });
-    await this.save();
+  return token;
+};
 
-    return token;
-}
-
+//generate reset password token
 userSchema.methods.getforgotPasswordToken = async function () {
-    const token = crypto.randomBytes(32).toString("hex");
-    
-    this.forgotPasswordToken = crypto.createHash("sha256").update(token).digest("hex");
+  const token = crypto.randomBytes(32).toString("hex");
 
-    this.forgotPasswordTokenExpiry = Date.now() + 5 * 60 * 1000;
+  this.forgotPasswordToken = crypto
+    .createHash("sha256")
+    .update(token)
+    .digest("hex");
 
-    return token;
-}
+  this.forgotPasswordTokenExpiry = Date.now() + 5 * 60 * 1000;
+
+  return token;
+};
 
 const User = model("User", userSchema);
 

@@ -56,7 +56,7 @@ paths:
         500:
           description: Internal server error
   /login:
-    get:
+    post:
       summary: Sign in user using email and password
       tags:
         - Authentication
@@ -88,7 +88,7 @@ paths:
         500:
           description: Internal server error
   /logout:
-    post:
+    get:
       security: 
         - bearerAuth: []
       summary: Sign out user
