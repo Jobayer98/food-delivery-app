@@ -1,6 +1,6 @@
-# Food Delivery API
+# Hungry Hub RESTful API
 
-[API Link](https://jobayer98.github.io/food-delivery-app/)
+[API Link](https://jobayer98.github.io/hungry-hub/)
 
 ## Introduction
 
