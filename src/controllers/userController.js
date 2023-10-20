@@ -4,6 +4,7 @@ const CustomError = require("../utility/CustomError");
 const mailHelper = require("../utility/emailHelper");
 const crypto = require("crypto");
 
+// user profile
 const userDashboard = async (req, res, next) => {
   try {
     const user = await User.find(req.user._id);
@@ -17,6 +18,7 @@ const userDashboard = async (req, res, next) => {
   }
 };
 
+//update user profile
 const updateUserInfo = async (req, res, next) => {
   try {
     let user = await User.findById(req.user._id);
@@ -35,6 +37,7 @@ const updateUserInfo = async (req, res, next) => {
   }
 };
 
+// upload user photo
 const uploadUserPhoto = async (req, res, next) => {
   try {
     let user = await User.findById(req.user._id);
@@ -67,6 +70,7 @@ const uploadUserPhoto = async (req, res, next) => {
   }
 };
 
+// update user password
 const updateUserPassword = async (req, res, next) => {
   const { oldPassword, newPassword } = req.body;
   try {
@@ -94,8 +98,11 @@ const updateUserPassword = async (req, res, next) => {
   }
 };
 
+// forgot user password
 const forgotPassword = async (req, res, next) => {
-  const user = await User.findOne({ email: req.body.email });
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+
   if (!user) {
     return next(new CustomError("User not found", 404));
   }
@@ -160,8 +167,7 @@ const resetPassword = async (req, res, next) => {
     }
     console.log(user.password);
     user.password = password;
-    user.forgotPasswordToken = undefined;
-    user.forgotPasswordTokenExpiry = undefined;
+
     await user.save();
     console.log(user.password);
 
