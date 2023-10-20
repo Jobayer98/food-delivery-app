@@ -4,7 +4,7 @@
 
 ## Introduction
 
-The Food Delivery System API is a powerful platform that allows users to order food from various restaurants, manage their profiles, and enables restaurant owners to manage their menus. This document provides an overview of the key features and functionalities of the API.
+Hungry Hub is a RESTful API platform that allows users to order food from various restaurants, manage their profiles, and enables restaurant owners to manage their menus. This document provides an overview of the key features and functionalities of the API.
 
 ## Features
 
@@ -61,6 +61,10 @@ The Food Delivery System API is a powerful platform that allows users to order f
   npm start
   npm run dev
   ```
+## Install in Docker
+```bash
+docker pull rashed200/hungry-hub
+```
 
 ## Author
 
