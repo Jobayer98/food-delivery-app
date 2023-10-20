@@ -13,7 +13,6 @@ const {
   updateMenuItem,
   getMenu,
   showOwnerMenus,
-  getMenu,
 } = require("../controllers/menuController");
 const {
   createReview,

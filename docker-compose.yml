@@ -1,0 +1,26 @@
+version: "3"
+services:
+  hungry-hub:
+    build:
+      context: .
+    ports:
+      - 3000:3000
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb+srv://food-delivery:food-delivery-app@cluster0.jk7pgvw.mongodb.net/food-delivery?retryWrites=true&w=majority
+
+  mongodb:
+    image: mongo
+    restart: always
+    container_name: mongodb
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb-data:/dat/db
+    environment:
+      MONGO_DB_USERNAME: food-delivery
+      MONGO_DB_PASSWORD: food-delivery
+
+volumes:
+  mongo-data:
